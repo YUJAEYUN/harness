@@ -24,7 +24,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일, raw 데이터(PER/PBR/EPS 시계열 CSV) 경로 수신, semiconductor-analyst의 실적 데이터 참조
-- 출력: `_workspace/01_valuation-quant-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_valuation-quant-analyst_report.md`
 - 형식: 섹션별(PER·PBR시계열/이익컨센서스리비전/P·E분해/과거대비percentile) + 출처 태그, P/E 분해는 표로 정리
 
 ## 팀 통신 프로토콜
