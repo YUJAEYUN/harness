@@ -5,13 +5,23 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 
 # KOSPI Semiconductor Bottom Harness — 총괄 오케스트레이터(PM)
 
-코스피 반도체 급락(2026.7~) 저점 판단을 위한 정적 스냅샷 분석 하네스. PM(오케스트레이터, 이 스킬을 실행하는 세션 자신)이 사용자와 유일하게 소통하며, 리서치팀 → 시나리오팀 순서로 두 개의 에이전트 팀을 웨이브 방식으로 조율한다.
+코스피 반도체 급락(2026.7~) 저점 판단을 위한 정적 스냅샷 분석 하네스. PM(오케스트레이터, 이 스킬을 실행하는 세션 자신)이 사용자와 유일하게 소통하며, 리서치팀 → 시나리오팀 순서로 두 웨이브를 조율한다.
 
-## 왜 웨이브 방식인가
+## 왜 웨이브 방식인가, 그리고 실제로 어떤 툴을 쓰는가
 
-원 설계는 PM→팀장→실무자 3단 계층이지만, Agent Team 툴은 팀 중첩을 지원하지 않고 2단계 이내 계층을 권장한다. 그래서 "팀장이 실무자 팀을 또 만드는" 구조 대신, PM이 직접 두 번(웨이브1: 리서치팀 8명, 웨이브2: 시나리오팀 7명) TeamCreate를 호출한다. 각 팀 안에서 "팀장" 멤버가 검수·종합 역할을 맡아, 원 설계의 계층적 의도(1차 필터링)를 유지한다. 자세한 팀 구성표는 `references/team-roster.md` 참조.
+원 설계는 PM→팀장→실무자 3단 계층이다. 이걸 문자 그대로 구현하려면 "팀장이 실무자 팀을 또 만드는" 중첩 구조가 필요한데, 이 세션에서 실제로 쓸 수 있는 툴은 `TeamCreate`/`TaskCreate`/`TeamDelete` 같은 정식 Agent Team API가 아니라 다음 3개뿐이다:
 
-## 실행 모드: 에이전트 팀 (웨이브 2회)
+| 툴 | 용도 |
+|---|---|
+| `Agent` | `subagent_type`(우리가 만든 15개 커스텀 에이전트 중 하나), `model: "opus"`, `prompt`, `run_in_background: true`로 이름 붙여 스폰 |
+| `SendMessage` | 이름으로 특정 서브에이전트에게 메시지 (완료 후에도 이름으로 이어서 대화 가능) |
+| `TaskOutput` / `TaskStop` | 백그라운드로 스폰한 에이전트의 상태 확인 / 중지 |
+
+즉 "팀"은 공유 작업 목록이 있는 별도 객체가 아니라, **PM이 이름 붙여 스폰한 백그라운드 서브에이전트들의 집합**이다. 의존관계(예: 7명 조사 완료 후 팀장이 종합)는 TaskCreate의 `depends_on`이 아니라, **PM이 직접 순서를 관리**해서 구현한다 — 병렬로 스폰 가능한 것들은 한 메시지에서 동시에 `Agent` 호출하고, 완료 알림을 받은 뒤에야 다음 단계(팀장 스폰)를 진행한다. 이렇게 하면 "팀장이 실무자를 검수·종합"하는 원 설계의 계층적 의도는 유지하면서, 실제 중첩 제약과 이 세션의 툴 한계를 동시에 지킬 수 있다. 자세한 스폰 예시는 `references/team-roster.md` 참조.
+
+## 실행 모드: 백그라운드 서브에이전트 + SendMessage 조율 (웨이브 2회)
+
+**주의**: 이 스킬 본문과 `references/team-roster.md`에 등장하는 "팀 구성", "팀원" 같은 표현은 논리적 그룹핑을 뜻할 뿐, `TeamCreate`로 만드는 실제 팀 객체가 아니다. 실행 시에는 항상 `Agent` 도구로 이름 붙여 스폰한다.
 
 ## 워크플로우
 
@@ -33,22 +43,22 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 4. 분석 기준일 확정 (오늘 날짜 기준 스냅샷)
 5. `_workspace/kospi-bottom/`, `_workspace/kospi-bottom/00_input/` 생성
 
-### Phase 2: 웨이브 1 — 리서치팀 (에이전트 팀)
+### Phase 2: 웨이브 1 — 리서치 (7명 병렬 스폰 → 팀장 종합)
 
-1. `TeamCreate(team_name: "research-team", members: [research-team-lead + 7 domain experts])` — 멤버 프롬프트에 `data-sourcing-protocol` 스킬 필독 지시 포함. 상세 멤버 구성과 프롬프트 템플릿은 `references/team-roster.md` 참조
-2. `TaskCreate` — 7개 조사 작업(전문가별) + 1개 검수·종합 작업(research-team-lead, 7개 전부에 `depends_on`)
-3. 팀원들이 자체 조율하며 조사 수행, 완료 시 `_workspace/kospi-bottom/01_{agent}_report.md` 저장
-4. research-team-lead가 검수 후 `_workspace/kospi-bottom/01_research_synthesis.md` + `_workspace/kospi-bottom/01_research_escalations.md` 작성
-5. PM은 `_workspace/kospi-bottom/01_research_escalations.md`를 읽어두되, **즉시 사용자에게 묻지 않는다** — 단, 분석의 전제 자체(고점/저점 정의 등 4장 시나리오 분기의 기준)를 흔드는 항목이면 예외적으로 이 시점에 바로 확인
-6. `TeamDelete`로 research-team 정리
+1. 한 메시지에서 7명 도메인 전문가를 동시에 `Agent(name: "{agent}", subagent_type: "{agent}", model: "opus", run_in_background: true, prompt: "...")`로 스폰. 프롬프트에 `data-sourcing-protocol` + 자신의 도메인 스킬 필독 지시, 분석 기준일, raw 데이터 경로(`_workspace/kospi-bottom/00_input/`, 있는 경우), 출력 경로(`_workspace/kospi-bottom/01_{agent}_report.md`)를 명시. 상세 프롬프트 템플릿은 `references/team-roster.md` 참조
+2. 7개 전부 완료 알림을 받을 때까지 대기 (백그라운드 완료 시 자동 통지됨 — 폴링하지 않는다)
+3. 7개 전부 완료되면 research-team-lead를 `Agent(name: "research-team-lead", subagent_type: "research-team-lead", model: "opus", prompt: "...")`로 스폰 — 프롬프트에 7개 보고서 경로 전달, 검수·종합 지시
+4. research-team-lead가 검수 중 특정 전문가에게 재확인이 필요하면, PM이 `SendMessage(to: "{agent-name}", ...)`로 해당 전문가를 이어서 호출해 재작업을 요청하고 결과를 research-team-lead에게 전달 (전문가는 이름으로 계속 resume 가능)
+5. research-team-lead가 `_workspace/kospi-bottom/01_research_synthesis.md` + `_workspace/kospi-bottom/01_research_escalations.md` 작성 완료
+6. PM은 `_workspace/kospi-bottom/01_research_escalations.md`를 읽어두되, **즉시 사용자에게 묻지 않는다** — 단, 분석의 전제 자체(고점/저점 정의 등 4장 시나리오 분기의 기준)를 흔드는 항목이면 예외적으로 이 시점에 바로 확인
 
-### Phase 3: 웨이브 2 — 시나리오팀 (에이전트 팀)
+### Phase 3: 웨이브 2 — 시나리오 (3명 병렬 → 순차 검토 3단 → 팀장 종합)
 
-1. `TeamCreate(team_name: "scenario-team", members: [scenario-team-lead + 6 roles])` — `_workspace/kospi-bottom/01_research_synthesis.md`를 공통 입력 경로로 전달
-2. `TaskCreate` — 3개 시나리오 구축 작업(병렬) + 레드팀 작업(3개 구축 완료에 `depends_on`) + 정량검증 작업(레드팀 완료에 `depends_on`) + 행동재무관찰 작업(정량검증 완료에 `depends_on`, 전체 중 마지막)
-3. 팀원들이 의존관계에 따라 순차·병렬 진행
-4. scenario-team-lead가 검수 후 `_workspace/kospi-bottom/02_scenario_synthesis.md` + `_workspace/kospi-bottom/02_scenario_escalations.md` 작성
-5. `TeamDelete`로 scenario-team 정리
+1. `_workspace/kospi-bottom/01_research_synthesis.md`를 입력으로, 3명 시나리오 구축자(bull/bear-a/bear-b)를 한 메시지에서 동시에 `Agent(..., run_in_background: true)`로 병렬 스폰
+2. 3개 전부 완료되면 cross-red-team을 스폰 (3개 시나리오 보고서 경로 입력) → 완료되면 quant-validator를 스폰 (레드팀 결과까지 입력) → 완료되면 behavioral-finance-observer를 스폰 (전체 산출물 입력). 이 3단계는 각자 이전 산출물을 읽어야 하므로 **반드시 순차 스폰** — 병렬로 동시에 띄우지 않는다
+3. behavioral-finance-observer까지 완료되면 scenario-team-lead를 스폰해 6개 산출물 전부를 검수·종합하도록 지시
+4. 검수 중 재작업이 필요하면 Phase 2와 동일하게 PM이 `SendMessage`로 해당 역할을 재호출
+5. scenario-team-lead가 `_workspace/kospi-bottom/02_scenario_synthesis.md` + `_workspace/kospi-bottom/02_scenario_escalations.md` 작성 완료
 
 ### Phase 4: PM 통합
 
@@ -74,8 +84,8 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 
 ```
 [PM] → Phase1: raw데이터 확인
-     → Phase2: TeamCreate(research-team, 8명) → 01_research_synthesis.md
-     → Phase3: TeamCreate(scenario-team, 7명, 01_research_synthesis.md 입력) → 02_scenario_synthesis.md
+     → Phase2: Agent×7 병렬 스폰(리서치) → research-team-lead 스폰 → 01_research_synthesis.md
+     → Phase3: Agent×3 병렬 스폰(시나리오) → red-team→quant→behavioral 순차 스폰 → scenario-team-lead 스폰 → 02_scenario_synthesis.md
      → Phase4: 에스컬레이션 일괄 확인 (사용자)
      → Phase5: dashboard-assembly 스킬 → HTML + 미확인가정.md
 ```
@@ -84,10 +94,10 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 
 | 상황 | 전략 |
 |------|------|
-| 리서치팀 멤버 1명 실패 | research-team-lead가 1회 재작업 지시, 재실패 시 해당 도메인 "미수집" 명시하고 진행 |
+| 리서치 전문가 1명 실패/무응답 | research-team-lead가 PM에게 알리면 PM이 `SendMessage`로 1회 재작업 지시, 재실패 시 `TaskStop`으로 종료하고 해당 도메인 "미수집" 명시하고 진행 |
 | 시나리오 3개 구축자 중 1명 완전 실패 | scenario-team-lead가 즉시 PM에게 보고 (시나리오 균형이 깨지므로 예외적으로 즉시 에스컬레이션) |
 | raw 데이터 미제공 | data-sourcing-protocol의 WEB 대체 절차로 진행, 미확인 가정에 전부 기록 |
-| 팀 간 사실관계 불일치 (시나리오팀이 리서치팀 원자료를 잘못 인용) | PM이 Phase 4에서 발견 시 해당 시나리오 담당 에이전트에게 재작업 지시 (개별 Agent 호출로 팀 재구성 없이) |
+| 리서치·시나리오 산출물 간 사실관계 불일치 (시나리오팀이 리서치팀 원자료를 잘못 인용) | PM이 Phase 4에서 발견 시 해당 시나리오 담당 에이전트를 `SendMessage`로 이어서 호출해 재작업 지시 |
 | 사용자가 Phase 4 질문에 답 없이 진행 요청 | 후보값 중 더 보수적인(비관 쪽에 가까운) 값을 채택하고 미확인 가정에 그 판단 근거 명시 |
 
 ## 테스트 시나리오
