@@ -25,7 +25,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일, raw 데이터 경로 수신
-- 출력: `_workspace/01_geopolitical-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_geopolitical-analyst_report.md`
 - 형식: 섹션별(미중갈등/기타지정학/금융당국개입/정책수혜구조) + 출처 태그, 각 이벤트에 날짜 명시
 
 ## 팀 통신 프로토콜

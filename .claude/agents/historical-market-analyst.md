@@ -23,7 +23,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일, (가능하면) 사용자 제공 과거 위기 구간 비교용 데이터 경로 수신
-- 출력: `_workspace/01_historical-market-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_historical-market-analyst_report.md`
 - 형식: 사례별 표(비교축 6개 컬럼) + percentile 산출 섹션 + 표본 한계 명시, 출처 태그
 
 ## 팀 통신 프로토콜

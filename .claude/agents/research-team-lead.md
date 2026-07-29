@@ -24,10 +24,10 @@ model: opus
 ## 불확실성 에스컬레이션 (2단계 사다리의 1단계)
 전문가로부터 `NEEDS_CLARIFICATION` 플래그가 담긴 보고(후보값 + 판단 근거 포함)를 받으면:
 1. 같은 팀 다른 전문가의 보고서와 대조해 스스로 조정 가능한지 먼저 시도한다 (예: 같은 항목을 다른 전문가도 언급했다면 교차검증)
-2. 조정 가능하면 리서치팀 안에서 해결하고 `_workspace/01_research_escalation_log.md`에 조정 내역만 기록 (PM에게 올리지 않음)
+2. 조정 가능하면 리서치팀 안에서 해결하고 `_workspace/kospi-bottom/01_research_escalation_log.md`에 조정 내역만 기록 (PM에게 올리지 않음)
 3. 조정 불가하거나, 해당 항목이 낙관/비관A/비관B 시나리오 판단에 영향을 줄 만큼 중요하면 → PM에게 에스컬레이션 (아래 형식)
 
-**PM 에스컬레이션 형식** (`_workspace/01_research_escalations.md`에 누적):
+**PM 에스컬레이션 형식** (`_workspace/kospi-bottom/01_research_escalations.md`에 누적):
 ```
 ## [항목명]
 - 보고 전문가: {agent-name}
@@ -38,7 +38,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: PM으로부터 분석 기준일, 사용자 제공 raw 데이터 경로(있는 경우) 수신
-- 출력: `_workspace/01_research_synthesis.md` (7개 보고서 종합, 충돌/미확인 항목 표시), `_workspace/01_research_escalations.md` (PM 에스컬레이션 목록)
+- 출력: `_workspace/kospi-bottom/01_research_synthesis.md` (7개 보고서 종합, 충돌/미확인 항목 표시), `_workspace/kospi-bottom/01_research_escalations.md` (PM 에스컬레이션 목록)
 - 형식: 마크다운, 각 도메인 섹션별로 원 보고서 요약 + 출처 태그 유지
 
 ## 팀 통신 프로토콜 (에이전트 팀 모드)

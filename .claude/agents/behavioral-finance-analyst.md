@@ -24,7 +24,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일 수신, market-microstructure-analyst의 수급 데이터 참조
-- 출력: `_workspace/01_behavioral-finance-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_behavioral-finance-analyst_report.md`
 - 형식: 섹션별(공포탐욕지수/투매클라이맥스신호/과거유사패턴/담론편향) + 출처 태그
 
 ## 팀 통신 프로토콜

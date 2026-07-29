@@ -11,7 +11,7 @@ model: opus
 **사용 스킬:** `meta-bias-audit`, `data-sourcing-protocol`
 
 ## 핵심 역할
-1. `_workspace/01_research_synthesis.md`(1층 포함), 세 시나리오, 레드팀 보고서, 정량검증 보고서 전체 검토
+1. `_workspace/kospi-bottom/01_research_synthesis.md`(1층 포함), 세 시나리오, 레드팀 보고서, 정량검증 보고서 전체 검토
 2. **확증편향** 점검: 특정 결론을 미리 정해두고 그에 맞는 근거만 골라 쓴 흔적이 있는지
 3. **최근성 편향** 점검: 가장 최근 뉴스(2026년 7월 급락)에 과도하게 가중치를 두고 더 긴 맥락을 놓치지 않았는지
 4. **프레이밍 효과** 점검: 같은 사실을 어떻게 서술하느냐에 따라 낙관/비관 인상이 달라지는 지점이 있는지
@@ -24,8 +24,8 @@ model: opus
 - 편향이 발견되면 그것이 결론을 뒤집을 만큼 심각한지, 아니면 경미한 서술상 편향인지 심각도를 구분
 
 ## 입력/출력 프로토콜
-- 입력: `_workspace/01_research_synthesis.md`, `_workspace/02_bull-case_report.md`, `_workspace/02_bear-case-a_report.md`, `_workspace/02_bear-case-b_report.md`, `_workspace/02_red-team_report.md`, `_workspace/02_quant-validation_report.md`
-- 출력: `_workspace/02_behavioral-observer_report.md`
+- 입력: `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`, `_workspace/kospi-bottom/02_red-team_report.md`, `_workspace/kospi-bottom/02_quant-validation_report.md`
+- 출력: `_workspace/kospi-bottom/02_behavioral-observer_report.md`
 - 형식: 편향 유형별 섹션(확증편향/최근성편향/프레이밍/사용자성향영향) + 발견사항별 근거·심각도
 
 ## 팀 통신 프로토콜

@@ -5,7 +5,7 @@ description: "리서치팀·시나리오팀 종합 산출물을 인터랙티브 
 
 # Dashboard Assembly
 
-`_workspace/01_research_synthesis.md`와 `_workspace/02_scenario_synthesis.md`를 하나의 정적 HTML 대시보드로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 탭 전환·토글·툴팁 등 클라이언트 사이드 UI로 한정한다 (라이브 데이터 연동 없음).
+`_workspace/kospi-bottom/01_research_synthesis.md`와 `_workspace/kospi-bottom/02_scenario_synthesis.md`를 하나의 정적 HTML 대시보드로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 탭 전환·토글·툴팁 등 클라이언트 사이드 UI로 한정한다 (라이브 데이터 연동 없음).
 
 ## 착수 전
 
@@ -29,7 +29,7 @@ description: "리서치팀·시나리오팀 종합 산출물을 인터랙티브 
 
 ## 미확인 가정 섹션
 
-대시보드와 별도로 `output/미확인_가정.md`를 생성한다. `_workspace/01_research_escalation_log.md`(팀 내 조정), `_workspace/02_scenario_escalation_log.md`(팀 내 조정), 그리고 Phase 4에서 사용자에게 확인받지 못하고 진행한 항목 전부를 빠짐없이 기록한다. 대시보드에는 이 문서로 연결되는 링크나 배너를 넣는다.
+대시보드와 별도로 `output/kospi-bottom/미확인_가정.md`를 생성한다. `_workspace/kospi-bottom/01_research_escalation_log.md`(팀 내 조정), `_workspace/kospi-bottom/02_scenario_escalation_log.md`(팀 내 조정), 그리고 Phase 4에서 사용자에게 확인받지 못하고 진행한 항목 전부를 빠짐없이 기록한다. 대시보드에는 이 문서로 연결되는 링크나 배너를 넣는다.
 
 ## 투자 조언 아님 고지 (필수, 눈에 띄는 위치)
 
@@ -41,5 +41,5 @@ description: "리서치팀·시나리오팀 종합 산출물을 인터랙티브 
 
 ## 산출 및 전달
 
-- 파일: `output/kospi-semiconductor-bottom-dashboard.html` (자체완결형 — 외부 CDN/폰트 의존 없이 인라인 CSS/JS)
+- 파일: `output/kospi-bottom/dashboard.html` (자체완결형 — 외부 CDN/폰트 의존 없이 인라인 CSS/JS)
 - 완성 후 사용자에게 파일로 전달 (SendUserFile 등) — Artifact로 공개 게시할지는 사용자에게 먼저 확인 (분석 대상이 투자 관련 민감 판단이므로 기본은 비공개 전달)

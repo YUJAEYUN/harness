@@ -29,12 +29,12 @@ TeamCreate(
   members: [
     { name: "research-team-lead", agent_type: "research-team-lead", model: "opus",
       prompt: "당신은 리서치팀장입니다. 7명 전문가의 산출물을 검수하고 종합하세요. 
-               입력 경로: _workspace/00_input/. 전문가 산출물 대기 후 검수를 시작하세요." },
+               입력 경로: _workspace/kospi-bottom/00_input/. 전문가 산출물 대기 후 검수를 시작하세요." },
     { name: "semiconductor", agent_type: "semiconductor-analyst", model: "opus",
       prompt: "코스피 반도체 급락 저점 분석 하네스의 반도체 산업 조사를 담당합니다.
                semiconductor-cycle-analysis, data-sourcing-protocol 스킬을 사용하세요.
-               분석 기준일: {date}. raw 데이터 경로(있는 경우): _workspace/00_input/.
-               출력: _workspace/01_semiconductor-analyst_report.md" },
+               분석 기준일: {date}. raw 데이터 경로(있는 경우): _workspace/kospi-bottom/00_input/.
+               출력: _workspace/kospi-bottom/01_semiconductor-analyst_report.md" },
     { name: "macro", agent_type: "macro-economist", model: "opus", prompt: "..." },
     { name: "geopolitical", agent_type: "geopolitical-analyst", model: "opus", prompt: "..." },
     { name: "microstructure", agent_type: "market-microstructure-analyst", model: "opus", prompt: "..." },
@@ -99,6 +99,6 @@ TaskCreate(tasks: [
 
 ## 공통 주의사항
 
-- 모든 `TeamCreate` 멤버 프롬프트에는 `_workspace/00_input/`(raw 데이터 경로), 분석 기준일, 자신의 에이전트 정의 파일(`.claude/agents/{name}.md`)과 사용할 스킬을 명시한다
+- 모든 `TeamCreate` 멤버 프롬프트에는 `_workspace/kospi-bottom/00_input/`(raw 데이터 경로), 분석 기준일, 자신의 에이전트 정의 파일(`.claude/agents/{name}.md`)과 사용할 스킬을 명시한다
 - `model: "opus"`를 모든 멤버에 명시한다
 - 웨이브 전환 시 반드시 `TeamDelete`로 이전 팀을 정리한 뒤 새 `TeamCreate` (세션당 1팀만 활성 가능)

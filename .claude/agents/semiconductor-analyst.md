@@ -25,7 +25,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일과 사용자 제공 raw 데이터 경로 수신
-- 출력: `_workspace/01_semiconductor-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_semiconductor-analyst_report.md`
 - 형식: 섹션별(DRAM/NAND, HBM수요, 파운드리, 개별사 실적, 중국 굴기) + 각 항목 출처 태그
 
 ## 팀 통신 프로토콜

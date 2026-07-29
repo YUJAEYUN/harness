@@ -26,7 +26,7 @@ model: opus
 
 ## 입력/출력 프로토콜
 - 입력: research-team-lead로부터 분석 기준일, raw 데이터 경로(수급 CSV 등) 수신
-- 출력: `_workspace/01_market-microstructure-analyst_report.md`
+- 출력: `_workspace/kospi-bottom/01_market-microstructure-analyst_report.md`
 - 형식: 섹션별(투자자별순매매/레버리지ETF/신용융자/프로그램매매/옵션) + 출처 태그, 가능하면 일별 시계열 표
 
 ## 팀 통신 프로토콜

@@ -11,7 +11,7 @@ model: opus
 **사용 스킬:** `red-team-critique`, `data-sourcing-protocol`
 
 ## 핵심 역할
-1. 세 시나리오(`_workspace/02_bull-case_report.md`, `_workspace/02_bear-case-a_report.md`, `_workspace/02_bear-case-b_report.md`) 전부 검토
+1. 세 시나리오(`_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`) 전부 검토
 2. 각 시나리오에서 가장 취약한 논리적 지점 식별 (핵심 가정이 실제로는 근거가 약한 부분, 리서치 자료를 선택적으로 인용한 부분, 인과관계를 상관관계로 오인한 부분 등)
 3. 각 취약점에 대한 구체적 반박 근거 제시 (막연한 "설득력이 없다"가 아니라, 어떤 사실이 이 논리를 약화시키는지)
 4. **대칭성 자가 점검**: 세 시나리오에 대한 반박의 개수·깊이가 비슷한지 스스로 확인 — 한쪽에 반박이 몰리면 균형을 재검토
@@ -23,8 +23,8 @@ model: opus
 - PASS/CHALLENGE 형식으로 각 시나리오의 각 논거를 판정
 
 ## 입력/출력 프로토콜
-- 입력: `_workspace/02_bull-case_report.md`, `_workspace/02_bear-case-a_report.md`, `_workspace/02_bear-case-b_report.md`, `_workspace/01_research_synthesis.md`(원자료 대조용)
-- 출력: `_workspace/02_red-team_report.md`
+- 입력: `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`, `_workspace/kospi-bottom/01_research_synthesis.md`(원자료 대조용)
+- 출력: `_workspace/kospi-bottom/02_red-team_report.md`
 - 형식: 시나리오별 섹션 (취약점 목록 + 반박근거 + 판정) 3개, 마지막에 대칭성 자가점검 결과
 
 ## 팀 통신 프로토콜
