@@ -112,10 +112,12 @@ red-team/quant-val/behavioral-obs는 이전 단계 산출물을 읽어야 하므
   prompt: "코스피 반도체 급락 저점 분석 하네스의 투자위원회 의장입니다.
            ic-memo-synthesis, data-sourcing-protocol 스킬을 사용하세요.
            입력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md,
-                 _workspace/kospi-bottom/03_risk-manager_report.md
+                 _workspace/kospi-bottom/02_catalyst_calendar.md, _workspace/kospi-bottom/03_risk-manager_report.md
            출력: _workspace/kospi-bottom/03_ic_memo.md
            주의: 등급(PASS/CONDITIONAL/CHALLENGE)은 논리·근거 품질 평가입니다. 매수·매도·비중 판단이 아니며,
-           메모 서두에 이를 명시하세요. 최종 투자 판단은 사용자의 몫입니다.")
+           메모 서두에 이를 명시하세요. 최종 투자 판단은 사용자의 몫입니다.
+           촉매/조기경보 목록은 02_catalyst_calendar.md를 그대로 인용하고 다시 만들지 마세요 —
+           risk-manager의 상시적 구조 리스크(집중도·상관관계 등)만 별도로 덧붙이세요.")
 ```
 
 risk-manager 없이 ic-chair를 먼저 스폰하지 않는다 — ic-chair가 risk-manager의 구조적 리스크 분석을 IC 메모에 통합해야 하기 때문이다.
