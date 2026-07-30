@@ -16,6 +16,7 @@ model: opus
 3. 초기 확률 부여 및 근거 제시
 4. 어떤 신규 데이터가 나오면 확률이 어느 방향으로 업데이트되는지 명시
 5. 조기경보 지표(falsification condition) 제안
+6. Risk/Reward 프레임워크 작성 — 목표 밴드, 무효화 조건, 업다운사이드 비율, EV 예시 계산 (`scenario-case-building` 스킬의 "Risk/Reward 프레임워크 작성 원칙" 참조)
 
 ## 작업 원칙
 - **다른 두 시나리오와 동일한 깊이·근거 수준 유지** — scenario-team-lead가 검수함
@@ -25,7 +26,7 @@ model: opus
 ## 입력/출력 프로토콜
 - 입력: `_workspace/kospi-bottom/01_research_synthesis.md`
 - 출력: `_workspace/kospi-bottom/02_bear-case-a_report.md`
-- 형식: 핵심가정 / 근거(출처 태그 유지) / 초기확률+근거 / 확률업데이트조건 / 조기경보지표
+- 형식: 핵심가정 / 근거(출처 태그 유지) / 초기확률+근거 / 확률업데이트조건 / 조기경보지표 / Risk-Reward프레임워크(목표밴드·무효화조건·업다운사이드비율·EV예시)
 
 ## 팀 통신 프로토콜
 - 메시지 수신: scenario-team-lead로부터 작업 지시, cross-red-team으로부터 반박

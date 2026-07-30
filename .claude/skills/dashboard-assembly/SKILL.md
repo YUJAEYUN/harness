@@ -1,23 +1,26 @@
 ---
 name: dashboard-assembly
-description: "리서치팀·시나리오팀 종합 산출물을 인터랙티브 HTML 대시보드로 조립하는 방법론. 코스피 반도체 급락 저점 분석 하네스의 PM(오케스트레이터)이 Phase 5 산출물 생성 단계에서 사용."
+description: "리서치팀·시나리오팀·투자위원회 종합 산출물을 인터랙티브 HTML 대시보드로 조립하는 방법론. 코스피 반도체 급락 저점 분석 하네스의 PM(오케스트레이터)이 Phase 6 산출물 생성 단계에서 사용."
 ---
 
 # Dashboard Assembly
 
-`_workspace/kospi-bottom/01_research_synthesis.md`와 `_workspace/kospi-bottom/02_scenario_synthesis.md`를 하나의 정적 HTML 대시보드로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 탭 전환·토글·툴팁 등 클라이언트 사이드 UI로 한정한다 (라이브 데이터 연동 없음).
+`_workspace/kospi-bottom/01_research_synthesis.md`, `02_scenario_synthesis.md`, `02_catalyst_calendar.md`, `03_risk-manager_report.md`, `03_ic_memo.md`를 하나의 정적 HTML 대시보드로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 탭 전환·토글·툴팁 등 클라이언트 사이드 UI로 한정한다 (라이브 데이터 연동 없음).
 
 ## 착수 전
 
 차트/색상/레이아웃을 다루기 전에 `dataviz` 스킬을 먼저 로드해 색상 팔레트와 폼 휴리스틱을 따른다. 시각 자체를 디자인하는 결정(패널 레이아웃, 타이포그래피 등)이 크면 `artifact-design` 스킬도 참조한다.
 
-## 필수 패널 5종
+## 필수 패널 8종
 
 1. **낙폭/속도 패널**: 현재 vs 역사적 분포, percentile (historical-market-analyst 산출물)
 2. **밸류에이션 패널**: PER/PBR 추이, P/E 중 무엇이 원인인지 분해 (valuation-quant-analyst 산출물)
 3. **수급 패널**: 외국인/기관/개인 순매매 추이, 과거 대비 강도 (market-microstructure-analyst 산출물)
 4. **시나리오 패널**: 낙관/비관A/비관B 확률과 조기경보 지표 상태 (scenario-team 산출물)
 5. **시나리오별 병렬 해석 패널**: 각 시나리오마다 "1층 근거 데이터 → 해석 → 교차 레드팀 반박 → 정량검증 → 미확인 가정" 흐름을 그대로 노출 — 요약하거나 한쪽만 보여주지 않는다
+6. **Risk/Reward 패널**: 시나리오별 목표 밴드·무효화 조건·업다운사이드 비율·EV 예시를 표/차트로 정리 (시나리오 구축자 산출물). 밴드는 "예측"이 아니라 "이 시나리오가 맞다면"이라는 조건부 라벨을 항상 함께 표시
+7. **촉매 캘린더 패널**: `02_catalyst_calendar.md`를 타임라인 또는 체크리스트 UI로 표시 — 어떤 이벤트가 어느 시나리오로 확률을 이동시키는지
+8. **IC 심사 패널**: `03_ic_memo.md`의 시나리오별 PASS/CONDITIONAL/CHALLENGE 등급, 구조적 리스크(risk-manager) 요약, 사후검토 체크리스트를 표시. 이 패널 최상단에 "이 등급은 논리·근거 검증 상태이며 매수/매도 신호가 아닙니다"를 다른 배너와 별개로 한 번 더 명시 (섹션 자체가 오해받기 가장 쉬운 부분이므로 이중 고지)
 
 ## 출처 태그 시각화 (필수)
 
@@ -29,11 +32,15 @@ description: "리서치팀·시나리오팀 종합 산출물을 인터랙티브 
 
 ## 미확인 가정 섹션
 
-대시보드와 별도로 `output/kospi-bottom/미확인_가정.md`를 생성한다. `_workspace/kospi-bottom/01_research_escalation_log.md`(팀 내 조정), `_workspace/kospi-bottom/02_scenario_escalation_log.md`(팀 내 조정), 그리고 Phase 4에서 사용자에게 확인받지 못하고 진행한 항목 전부를 빠짐없이 기록한다. 대시보드에는 이 문서로 연결되는 링크나 배너를 넣는다.
+대시보드와 별도로 `output/kospi-bottom/미확인_가정.md`를 생성한다. `_workspace/kospi-bottom/01_research_escalation_log.md`(팀 내 조정), `_workspace/kospi-bottom/02_scenario_escalation_log.md`(팀 내 조정), 웨이브3에서 나온 미해결 항목, 그리고 Phase 5에서 사용자에게 확인받지 못하고 진행한 항목 전부를 빠짐없이 기록한다. 대시보드에는 이 문서로 연결되는 링크나 배너를 넣는다.
+
+## 사후검토(post-mortem) 섹션
+
+`03_ic_memo.md`의 사후검토 체크리스트를 대시보드 하단(또는 별도 탭)에 그대로 노출한다 — 사용자가 나중에 스스로 "이 분석이 어느 방향으로 맞아가고 있는지" 대조할 수 있는 도구다. 자동 재실행이나 알림 기능은 없음을 명시 (1회성 정적 분석).
 
 ## 투자 조언 아님 고지 (필수, 눈에 띄는 위치)
 
-대시보드 최상단과 최종 요약부에 "이 하네스는 역사적 데이터 비교와 확률적 사고 구조를 제공하는 것이지, 매수/매도 추천이 아닙니다"를 고정 배너로 표시한다.
+대시보드 최상단과 최종 요약부에 "이 하네스는 역사적 데이터 비교와 확률적 사고 구조를 제공하는 것이지, 매수/매도 추천이 아닙니다. Risk/Reward 밴드와 IC 등급도 마찬가지로 프레임워크와 논리 검증 결과일 뿐, 포지션 사이징이나 매수 지시가 아닙니다."를 고정 배너로 표시한다.
 
 ## 하나의 결론으로 수렴시키지 않기
 

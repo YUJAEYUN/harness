@@ -5,6 +5,7 @@
 ## 목차
 - 웨이브 1: 리서치 멤버 구성 (8명)
 - 웨이브 2: 시나리오 멤버 구성 (7명)
+- 웨이브 3: 투자위원회 멤버 구성 (2명)
 - Agent 스폰 예시
 - 순서 관리 원칙
 
@@ -85,6 +86,39 @@ research-team-lead가 특정 전문가에게 재확인이 필요하다고 보고
 ```
 
 red-team/quant-val/behavioral-obs는 이전 단계 산출물을 읽어야 하므로 **절대 동시에 스폰하지 않는다** — 순서를 지키지 않으면 레드팀이 없는데 정량검증자가 레드팀 결과를 요구하는 식으로 입력이 비어있는 채로 실행된다.
+
+---
+
+## 웨이브 3: 투자위원회 (2명)
+
+| 이름 | subagent_type | 스킬 | 출력 |
+|--------|--------------|------|------|
+| risk-mgr | `risk-manager` | `risk-concentration-review`, `data-sourcing-protocol` | `03_risk-manager_report.md` |
+| ic-chair | `ic-chair` | `ic-memo-synthesis`, `data-sourcing-protocol` | `03_ic_memo.md` |
+
+**이 웨이브에서 절대 하지 않는 것 (PM이 프롬프트 작성 시 반드시 지킬 것):** risk-manager, ic-chair 둘 다 포지션 사이징이나 매수/매도 지시를 하지 않는다. 스폰 프롬프트에 이 경계를 명시적으로 적어라 — 두 에이전트 정의 파일에도 이미 명시돼 있지만, 스폰 프롬프트에서 한 번 더 상기시키면 이탈 위험이 줄어든다.
+
+### 순서 (순차 2단계 — risk-manager 먼저, ic-chair가 그 결과를 입력받음)
+
+```
+1단계: Agent(name: "risk-mgr", subagent_type: "risk-manager", model: "opus", run_in_background: true,
+  prompt: "코스피 반도체 급락 저점 분석 하네스의 리스크 관리자입니다.
+           risk-concentration-review, data-sourcing-protocol 스킬을 사용하세요.
+           입력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md
+           출력: _workspace/kospi-bottom/03_risk-manager_report.md
+           주의: 포지션 사이징이나 '얼마를 사라' 같은 지시는 하지 않습니다. 리스크 구조를 프레임워크로만 제시하세요.")
+   ↓ 완료 대기
+2단계: Agent(name: "ic-chair", subagent_type: "ic-chair", model: "opus",
+  prompt: "코스피 반도체 급락 저점 분석 하네스의 투자위원회 의장입니다.
+           ic-memo-synthesis, data-sourcing-protocol 스킬을 사용하세요.
+           입력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md,
+                 _workspace/kospi-bottom/03_risk-manager_report.md
+           출력: _workspace/kospi-bottom/03_ic_memo.md
+           주의: 등급(PASS/CONDITIONAL/CHALLENGE)은 논리·근거 품질 평가입니다. 매수·매도·비중 판단이 아니며,
+           메모 서두에 이를 명시하세요. 최종 투자 판단은 사용자의 몫입니다.")
+```
+
+risk-manager 없이 ic-chair를 먼저 스폰하지 않는다 — ic-chair가 risk-manager의 구조적 리스크 분석을 IC 메모에 통합해야 하기 때문이다.
 
 ## 공통 주의사항
 
