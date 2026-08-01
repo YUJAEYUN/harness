@@ -10,12 +10,38 @@
 | 묶음 | 원문 보고서/공식 문서 n | 독립 source family n | 사용 가능 범위 | 판정 |
 |---|---:|---:|---|---|
 | KOSPI 12MF EPS 고점→저점(2008/2018/2022) | 1 (동일 표 재수록본 1건은 중복) | 1 (`REFINITIV_KOSPI_12MF_EPS`) | 사건별 관측값·단일계열 범위 | **독립성 요건 미충족; 역사적 임계값 산출 금지** |
-| KOSPI 가격 저점 | 3 (한국은행 공식 간행물/문서) | 1 (`KRX_KOSPI_PRICE_VIA_BOK`) | 종가·날짜 교차 앵커 | 공식 2차 공표값 |
+| KOSPI 가격 저점 | 한국은행 공식 문서 + KRX 일별 원자료 | 2 (`KRX_KOSPI_PRICE_VIA_BOK`, `KRX_KOSPI_PRICE_DAILY`) | 2007년 이후 종가·저점·회복기간 | KRX 직접 원자료로 승격 |
 | EPS revision breadth / 단기 변화 | 2 | 2 (`FACTSET_MSCI_EPS`, `BLOOMBERG_KOSPI_BREADTH`) | 사건 당시 단기 방향·폭 | 지수/정의가 달라 EPS 레벨과 합산 금지 |
-| PER/PBR | 4 | 4 (`KIS_UNIVERSE_FWD_VAL`, `FNGUIDE_KOSPI_VAL`, `YUANTA_KOSPI_PBR`, `DAISHIN_PBR_VIA_MEDIA`) | 각 기준일의 스냅숏/범위 | 장기 저점 분포로 합산 불가 |
+| PER/PBR | 보고서 4건 + KRX 일별 원자료 | 5 (`KIS_UNIVERSE_FWD_VAL`, `FNGUIDE_KOSPI_VAL`, `YUANTA_KOSPI_PBR`, `DAISHIN_PBR_VIA_MEDIA`, `KRX_KOSPI_VALUATION_DAILY`) | KRX 정의의 2007년 이후 장기 분포와 저점일 비교 | KRX 정의 안에서만 분포 계산 가능; 12MF와 합산 금지 |
 | 정책·거시 트리거 | 4 | 2 (`BOK_POLICY_AND_MARKETS`, `KCMI_MARKET_REVIEW`) | 사건 순서 확인 | 인과효과 크기는 추정하지 않음 |
 
-전체 고유 문서 수는 10개(원문 PDF/기관 페이지 9개 + C등급 언론 재인용 1개), 전체 source family는 8개다. 단, 이 숫자는 서로 정의가 다른 지표를 합친 문서 커버리지일 뿐이며, **EPS 하강 분포의 유효 표본은 사건 n=3 / source family n=1**이다.
+전체 고유 문서·원자료 묶음은 11개(기존 10개 + KRX 일별 자료 묶음), 전체 source family는 10개다. 단, 이 숫자는 서로 정의가 다른 지표를 합친 커버리지일 뿐이며, **EPS 하강 분포의 유효 표본은 사건 n=3 / source family n=1**이다.
+
+### 0-1. 2026-08-01 KRX 원자료 추가
+
+**KRX-PRICE-DAILY-01**
+
+- `metric_definition`: KOSPI 일별 종가·시가·고가·저가·거래량·거래대금·시가총액
+- `observation_start`: 2007-01-02
+- `observation_end`: 2026-07-31
+- `frequency`: 거래일
+- `source`: 한국거래소 `[11003] 개별지수 시세 추이`
+- `url`: https://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201010103
+- `evidence_grade`: `[OFFICIAL]`
+- `source_family_id`: `KRX_KOSPI_PRICE_DAILY`
+- `methodology_notes`: 분기 단위 조회 후 경계 중복 41건을 날짜 기준으로 제거. 최종 4,828거래일. `00_input/krx_kospi_price_daily_2007_2026.csv`에 보존.
+
+**KRX-VALUATION-DAILY-01**
+
+- `metric_definition`: KRX 화면 정의의 KOSPI 일별 PER·PBR·배당수익률
+- `observation_start`: 2007-01-02
+- `observation_end`: 2026-07-31
+- `frequency`: 거래일
+- `source`: 한국거래소 `[11007] PER/PBR/배당수익률 > 개별지수`
+- `url`: https://data.krx.co.kr/contents/MDC/MDI/mdiLoader/index.cmd?menuId=MDC0201010107
+- `evidence_grade`: `[OFFICIAL]`
+- `source_family_id`: `KRX_KOSPI_VALUATION_DAILY`
+- `methodology_notes`: 가격 계열과 같은 4,828개 날짜를 확인. KRX 정의 안에서 과거 저점·백분위 비교에 사용. FnGuide·Refinitiv의 12MF PER/EPS로 재명명하거나 합산하지 않음. `00_input/krx_kospi_per_pbr_daily_2007_2026.csv`에 보존.
 
 ## 1. Claim registry
 
