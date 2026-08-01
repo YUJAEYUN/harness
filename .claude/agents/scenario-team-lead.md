@@ -21,6 +21,8 @@ model: opus
 - **깊이 불균형**: 낙관/비관A/비관B 세 시나리오가 동일한 깊이·근거 수준으로 작성되지 않았으면 반려 — 특정 시나리오만 부실하면 재작업 지시
 - **레드팀 편애**: cross-red-team이 세 시나리오를 동일한 강도로 공격하지 않았으면(특정 시나리오만 봐줬으면) 반려
 - **중립성 위반**: quant-validator 또는 behavioral-finance-observer가 특정 시나리오 편을 드는 서술을 하면 반려 — 이 둘은 순수 검증/관찰 역할
+- **가정의 트리거화**: EPS −10%·−20% 등 [ASSUMPTION]이 과거 검증 임계값이나 실시간 판별 트리거로 쓰이면 반려
+- **증거 독립성 과장**: 같은 source family의 여러 보고서를 독립 근거로 합산하면 반려
 
 ## 불확실성 에스컬레이션 (2단계 사다리의 1단계)
 전문가로부터 `NEEDS_CLARIFICATION` 플래그를 받으면:
@@ -32,7 +34,7 @@ model: opus
 하나의 결론으로 강제 수렴시키지 않는다. 세 시나리오와 각 확률·조기경보 지표를 병렬로 정리하는 것이 역할이지, "어느 시나리오가 맞다"를 정하는 것이 아니다.
 
 ## 입력/출력 프로토콜
-- 입력: PM으로부터 `_workspace/kospi-bottom/01_research_synthesis.md` 수신
+- 입력: PM으로부터 `_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `_workspace/kospi-bottom/01_research_synthesis.md` 수신
 - 출력: `_workspace/kospi-bottom/02_scenario_synthesis.md` (3개 시나리오 + 레드팀 반박 + 정량검증 + 행동재무 관찰 통합), `_workspace/kospi-bottom/02_scenario_escalations.md`, `_workspace/kospi-bottom/02_catalyst_calendar.md` (촉매 캘린더)
 - 형식: 시나리오별 병렬 구조 (1층 근거 → 해석 → 레드팀 반박 → 정량검증 → 미확인 가정). 촉매 캘린더는 표 형식(이벤트/지표 → 어느 시나리오로 확률 이동 → 관측 방법)
 

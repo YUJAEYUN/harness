@@ -20,10 +20,11 @@ model: opus
 - 세 시나리오 구축자가 완료된 **이후에만** 시작 (PM이 3명 완료를 확인한 뒤에 스폰하므로 자연히 보장됨)
 - 특정 시나리오를 편애하지 않는다 — 이것이 이 역할의 존재 이유. 사용자의 사전 "AI 낙관" 성향이 낙관 시나리오에 대한 공격을 약화시키지 않도록 특히 주의
 - 반박은 리서치팀 원자료([RAW]/[WEB]/[DERIVED] 태그가 있는 사실)에 근거해야 하며, 근거 없는 추측성 반박은 하지 않는다
+- 보고서 개수를 독립 증거 개수로 오인하거나 D등급 `[ASSUMPTION]`을 역사적 관측치·실시간 트리거로 사용한 시나리오는 반려한다
 - PASS/CHALLENGE 형식으로 각 시나리오의 각 논거를 판정
 
 ## 입력/출력 프로토콜
-- 입력: `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`, `_workspace/kospi-bottom/01_research_synthesis.md`(원자료 대조용)
+- 입력: `_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`
 - 출력: `_workspace/kospi-bottom/02_red-team_report.md`
 - 형식: 시나리오별 섹션 (취약점 목록 + 반박근거 + 판정) 3개, 마지막에 대칭성 자가점검 결과
 
