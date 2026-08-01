@@ -3,7 +3,7 @@
 이 문서의 "팀"은 논리적 그룹핑일 뿐, `TeamCreate`로 만드는 실제 팀 객체가 아니다. 이 세션에는 정식 Agent Team API(`TeamCreate`/`TaskCreate`/`TeamDelete`)가 없고, `Agent`(이름 붙여 백그라운드 스폰) + `SendMessage`(이름으로 이어서 대화) + `TaskOutput`/`TaskStop`(상태 확인/중지)만 있다. 의존관계는 도구가 아니라 **PM이 스폰 순서로 직접 관리**한다.
 
 ## 목차
-- 웨이브 1: 리서치 멤버 구성 (8명)
+- 웨이브 1: 리서치 멤버 구성 (9명)
 - 웨이브 2: 시나리오 멤버 구성 (7명)
 - 웨이브 3: 투자위원회 멤버 구성 (2명)
 - Agent 스폰 예시
@@ -11,11 +11,12 @@
 
 ---
 
-## 웨이브 1: 리서치 (8명)
+## 웨이브 1: 리서치 (9명)
 
 | 이름 | subagent_type | 스킬 | 출력 |
 |--------|--------------|------|------|
 | research-team-lead | `research-team-lead` (커스텀) | `team-synthesis-review`, `data-sourcing-protocol` | `01_research_synthesis.md`, `01_research_escalations.md` |
+| public-evidence | `public-research-evidence-curator` | `data-sourcing-protocol` | `01_public-research-evidence-registry.md` |
 | semiconductor | `semiconductor-analyst` | `semiconductor-cycle-analysis`, `data-sourcing-protocol` | `01_semiconductor-analyst_report.md` |
 | macro | `macro-economist` | `macro-liquidity-analysis`, `data-sourcing-protocol` | `01_macro-economist_report.md` |
 | geopolitical | `geopolitical-analyst` | `geopolitical-risk-analysis`, `data-sourcing-protocol` | `01_geopolitical-analyst_report.md` |
@@ -24,7 +25,7 @@
 | historical | `historical-market-analyst` | `historical-crash-comparison`, `data-sourcing-protocol` | `01_historical-market-analyst_report.md` |
 | behavioral | `behavioral-finance-analyst` | `behavioral-signal-analysis`, `data-sourcing-protocol` | `01_behavioral-finance-analyst_report.md` |
 
-### 1단계 — 7명 동시 스폰 (한 메시지에서 병렬 Agent 호출)
+### 1단계 — 준원자료 큐레이션 + 독립 도메인 5명 병렬
 
 ```
 Agent(name: "semiconductor", subagent_type: "semiconductor-analyst", model: "opus", run_in_background: true,
@@ -36,18 +37,35 @@ Agent(name: "semiconductor", subagent_type: "semiconductor-analyst", model: "opu
 Agent(name: "macro", subagent_type: "macro-economist", model: "opus", run_in_background: true, prompt: "...")
 Agent(name: "geopolitical", subagent_type: "geopolitical-analyst", model: "opus", run_in_background: true, prompt: "...")
 Agent(name: "microstructure", subagent_type: "market-microstructure-analyst", model: "opus", run_in_background: true, prompt: "...")
-Agent(name: "valuation", subagent_type: "valuation-quant-analyst", model: "opus", run_in_background: true, prompt: "...")
-Agent(name: "historical", subagent_type: "historical-market-analyst", model: "opus", run_in_background: true, prompt: "...")
 Agent(name: "behavioral", subagent_type: "behavioral-finance-analyst", model: "opus", run_in_background: true, prompt: "...")
+Agent(name: "public-evidence", subagent_type: "public-research-evidence-curator", model: "opus", run_in_background: true,
+  prompt: "공개 증권사·투자은행·바이사이드 원문 보고서에서 재현 가능한 KOSPI EPS/PER/역사적 하강·반등 트리거 수치를 추출하세요.
+           data-sourcing-protocol의 A~D 등급과 source_family_id를 적용하고 목표가·스트레스 가정을 격리하세요.
+           출력: _workspace/kospi-bottom/01_public-research-evidence-registry.md")
 ```
 
-이 7개는 서로 의존이 없으므로 **한 메시지에서 동시에** 호출한다. 완료 알림은 각각 자동으로 온다 — 폴링하지 않는다.
+이 6개는 서로 의존이 없으므로 한 메시지에서 동시에 호출한다.
 
-### 2단계 — 7명 전부 완료 후 research-team-lead 스폰
+### 2단계 — public-evidence와 semiconductor 완료 후 valuation·historical 병렬
+
+```
+Agent(name: "valuation", subagent_type: "valuation-quant-analyst", model: "opus", run_in_background: true,
+  prompt: "입력: 01_public-research-evidence-registry.md, 01_semiconductor-analyst_report.md.
+           로그/Shapley로 평가배수·이익 기여의 부호를 보존하고 [ASSUMPTION]을 격리하세요.
+           출력: _workspace/kospi-bottom/01_valuation-quant-analyst_report.md")
+
+Agent(name: "historical", subagent_type: "historical-market-analyst", model: "opus", run_in_background: true,
+  prompt: "입력: 01_public-research-evidence-registry.md.
+           사건별 12MF EPS 하락률·기간·주가저점 시차와 트리거 타임라인을 source family 중복 없이 비교하세요.
+           출력: _workspace/kospi-bottom/01_historical-market-analyst_report.md")
+```
+
+### 3단계 — 8개 실무 산출물 완료 후 research-team-lead 스폰
 
 ```
 Agent(name: "research-team-lead", subagent_type: "research-team-lead", model: "opus",
-  prompt: "당신은 리서치팀장입니다. 아래 7개 보고서를 검수하고 종합하세요.
+  prompt: "당신은 리서치팀장입니다. 아래 8개 실무 산출물을 검수하고 종합하세요.
+           _workspace/kospi-bottom/01_public-research-evidence-registry.md
            _workspace/kospi-bottom/01_semiconductor-analyst_report.md
            _workspace/kospi-bottom/01_macro-economist_report.md
            _workspace/kospi-bottom/01_geopolitical-analyst_report.md
@@ -55,11 +73,12 @@ Agent(name: "research-team-lead", subagent_type: "research-team-lead", model: "o
            _workspace/kospi-bottom/01_valuation-quant-analyst_report.md
            _workspace/kospi-bottom/01_historical-market-analyst_report.md
            _workspace/kospi-bottom/01_behavioral-finance-analyst_report.md
+           증거등급·source family 중복·관측값/[ASSUMPTION] 분리를 검수하고 첫 부분에 의사결정 증거표를 작성하세요.
            team-synthesis-review 스킬을 사용하세요.
            출력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/01_research_escalations.md")
 ```
 
-research-team-lead가 특정 전문가에게 재확인이 필요하다고 보고하면, PM이 `SendMessage(to: "{전문가 이름}", message: "...")`로 이어서 요청하고 결과를 research-team-lead에게 전달한다.
+research-team-lead가 특정 전문가에게 재확인이 필요하다고 보고하면, PM이 `SendMessage(to: "{전문가 이름}", message: "...")`로 이어서 요청하고 결과를 전달한다.
 
 ---
 
@@ -78,6 +97,7 @@ research-team-lead가 특정 전문가에게 재확인이 필요하다고 보고
 ### 순서 (병렬 1단계 + 순차 3단계 + 종합)
 
 ```
+공통 입력: 01_public-research-evidence-registry.md, 01_research_synthesis.md
 1단계 (병렬, 동시 스폰): bull, bear-a, bear-b
    ↓ 3개 전부 완료 대기
 2단계 (순차 — 반드시 하나씩): red-team 스폰 → 완료 대기 → quant-val 스폰 → 완료 대기 → behavioral-obs 스폰 → 완료 대기
@@ -104,14 +124,16 @@ red-team/quant-val/behavioral-obs는 이전 단계 산출물을 읽어야 하므
 1단계: Agent(name: "risk-mgr", subagent_type: "risk-manager", model: "opus", run_in_background: true,
   prompt: "코스피 반도체 급락 저점 분석 하네스의 리스크 관리자입니다.
            risk-concentration-review, data-sourcing-protocol 스킬을 사용하세요.
-           입력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md
+           입력: _workspace/kospi-bottom/01_public-research-evidence-registry.md,
+                 _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md
            출력: _workspace/kospi-bottom/03_risk-manager_report.md
            주의: 포지션 사이징이나 '얼마를 사라' 같은 지시는 하지 않습니다. 리스크 구조를 프레임워크로만 제시하세요.")
    ↓ 완료 대기
 2단계: Agent(name: "ic-chair", subagent_type: "ic-chair", model: "opus",
   prompt: "코스피 반도체 급락 저점 분석 하네스의 투자위원회 의장입니다.
            ic-memo-synthesis, data-sourcing-protocol 스킬을 사용하세요.
-           입력: _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md,
+           입력: _workspace/kospi-bottom/01_public-research-evidence-registry.md,
+                 _workspace/kospi-bottom/01_research_synthesis.md, _workspace/kospi-bottom/02_scenario_synthesis.md,
                  _workspace/kospi-bottom/03_risk-manager_report.md
            출력: _workspace/kospi-bottom/03_ic_memo.md
            주의: 등급(PASS/CONDITIONAL/CHALLENGE)은 논리·근거 품질 평가입니다. 매수·매도·비중 판단이 아니며,

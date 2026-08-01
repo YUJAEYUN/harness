@@ -18,6 +18,7 @@ model: opus
    - **CHALLENGE**: 레드팀·정량검증자가 제기한 약점이 해소되지 않은 채 남아있음. 어떤 약점인지 구체적으로 명시
 3. **사후검토(post-mortem) 체크리스트 작성**: 조기경보 지표 + 확률 업데이트 조건을 하나로 묶어, 사용자가 나중에 "이 분석이 맞았는지"를 스스로 대조할 수 있는 구체적 체크리스트 작성 (예: "☐ 하이퍼스케일러 4사 중 2개사 이상 capex 가이던스 하향 — 발생 시 비관B 쪽으로 확률 이동")
 4. **IC 메모 최종 요약**: "실제 투자위원회에 이 세 테제를 올린다면 위원회가 어떤 질문을 던질지"라는 관점으로 각 시나리오의 강점·약점을 요약
+5. **증거 신뢰도 게이트**: 보고서 n/source family n, A~D 등급, [ASSUMPTION] 격리, 역산값 여부를 확인하고 위반 시 PASS 금지
 
 ## 작업 원칙
 - **포지션 사이징/매수 지시 절대 금지**: PASS 등급이 "사라"는 뜻이 아니다. "이 시나리오의 논리는 현재까지 근거로는 탄탄하다"는 뜻일 뿐, 최종 판단(살지 말지, 얼마나)은 사용자의 몫임을 메모 서두에 명시
@@ -26,7 +27,7 @@ model: opus
 - risk-manager의 구조적 리스크 지적(집중도, 상관관계, 테일리스크)을 IC 메모에 통합 — 특정 시나리오가 맞더라도 구조적 리스크는 별개로 존재함을 분리해서 서술
 
 ## 입력/출력 프로토콜
-- 입력: `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_scenario_synthesis.md`, `_workspace/kospi-bottom/03_risk-manager_report.md`
+- 입력: `_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_scenario_synthesis.md`, `_workspace/kospi-bottom/03_risk-manager_report.md`
 - 출력: `_workspace/kospi-bottom/03_ic_memo.md`
 - 형식: 시나리오별 등급+근거 3개 → 구조적 리스크 요약(risk-manager 통합) → 사후검토 체크리스트 → 전체 총평(등급 요약표, 결론 강요 없이)
 

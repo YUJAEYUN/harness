@@ -1,6 +1,6 @@
 ---
 name: kospi-semiconductor-bottom-harness
-description: "코스피 반도체 급락 저점 판단 분석 하네스의 총괄 오케스트레이터(PM). '코스피 저점 분석', '반도체 급락 저점', '코스피 반도체 하네스 실행', '이 급락 바닥이 어디쯤인지 분석해줘' 요청 시 사용. 리서치팀(8명)→시나리오팀(7명)→투자위원회(2명)를 웨이브 방식으로 조율해 IC 메모가 포함된 HTML 대시보드와 미확인 가정 문서를 생성한다. 후속 작업: 이 분석 다시 실행, 새 raw 데이터로 갱신, 특정 전문가/시나리오만 다시 분석, 대시보드 수정 요청 시에도 반드시 이 스킬을 사용."
+description: "코스피 반도체 급락 저점 판단 분석 하네스의 총괄 오케스트레이터(PM). raw 시계열이 없으면 공개 증권사·투자은행·바이사이드 보고서를 A~D 증거등급과 원천 데이터 계열별로 정규화하고, 역사적 EPS 하강·반등 트리거를 검증한 뒤 리서치팀(9명)→시나리오팀(7명)→투자위원회(2명)를 조율해 근거 중심 HTML 대시보드와 미확인 가정 문서를 생성한다."
 ---
 
 # KOSPI Semiconductor Bottom Harness — 총괄 오케스트레이터(PM)
@@ -15,11 +15,11 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 
 | 툴 | 용도 |
 |---|---|
-| `Agent` | `subagent_type`(우리가 만든 15개 커스텀 에이전트 중 하나), `model: "opus"`, `prompt`, `run_in_background: true`로 이름 붙여 스폰 |
+| `Agent` | `subagent_type`(현재 등록된 18개 커스텀 에이전트 중 하나), `model: "opus"`, `prompt`, `run_in_background: true`로 이름 붙여 스폰 |
 | `SendMessage` | 이름으로 특정 서브에이전트에게 메시지 (완료 후에도 이름으로 이어서 대화 가능) |
 | `TaskOutput` / `TaskStop` | 백그라운드로 스폰한 에이전트의 상태 확인 / 중지 |
 
-즉 "팀"은 공유 작업 목록이 있는 별도 객체가 아니라, **PM이 이름 붙여 스폰한 백그라운드 서브에이전트들의 집합**이다. 의존관계(예: 7명 조사 완료 후 팀장이 종합)는 TaskCreate의 `depends_on`이 아니라, **PM이 직접 순서를 관리**해서 구현한다 — 병렬로 스폰 가능한 것들은 한 메시지에서 동시에 `Agent` 호출하고, 완료 알림을 받은 뒤에야 다음 단계(팀장 스폰)를 진행한다. 이렇게 하면 "팀장이 실무자를 검수·종합"하는 원 설계의 계층적 의도는 유지하면서, 실제 중첩 제약과 이 세션의 툴 한계를 동시에 지킬 수 있다. 자세한 스폰 예시는 `references/team-roster.md` 참조.
+즉 "팀"은 공유 작업 목록이 있는 별도 객체가 아니라, **PM이 이름 붙여 스폰한 백그라운드 서브에이전트들의 집합**이다. 의존관계(예: 8개 실무 산출물 완료 후 팀장이 종합)는 TaskCreate의 `depends_on`이 아니라, **PM이 직접 순서를 관리**해서 구현한다. 자세한 스폰 예시는 `references/team-roster.md` 참조.
 
 ## 실행 모드: 백그라운드 서브에이전트 + SendMessage 조율 (웨이브 3회)
 
@@ -45,27 +45,28 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 4. 분석 기준일 확정 (오늘 날짜 기준 스냅샷)
 5. `_workspace/kospi-bottom/`, `_workspace/kospi-bottom/00_input/` 생성
 
-### Phase 2: 웨이브 1 — 리서치 (7명 병렬 스폰 → 팀장 종합)
+### Phase 2: 웨이브 1 — 리서치 (준원자료 큐레이션 → 도메인 분석 → 팀장 종합)
 
-1. 한 메시지에서 7명 도메인 전문가를 동시에 `Agent(name: "{agent}", subagent_type: "{agent}", model: "opus", run_in_background: true, prompt: "...")`로 스폰. 프롬프트에 `data-sourcing-protocol` + 자신의 도메인 스킬 필독 지시, 분석 기준일, raw 데이터 경로(`_workspace/kospi-bottom/00_input/`, 있는 경우), 출력 경로(`_workspace/kospi-bottom/01_{agent}_report.md`)를 명시. 상세 프롬프트 템플릿은 `references/team-roster.md` 참조
-2. 7개 전부 완료 알림을 받을 때까지 대기 (백그라운드 완료 시 자동 통지됨 — 폴링하지 않는다)
-3. 7개 전부 완료되면 research-team-lead를 `Agent(name: "research-team-lead", subagent_type: "research-team-lead", model: "opus", prompt: "...")`로 스폰 — 프롬프트에 7개 보고서 경로 전달, 검수·종합 지시
-4. research-team-lead가 검수 중 특정 전문가에게 재확인이 필요하면, PM이 `SendMessage(to: "{agent-name}", ...)`로 해당 전문가를 이어서 호출해 재작업을 요청하고 결과를 research-team-lead에게 전달 (전문가는 이름으로 계속 resume 가능)
-5. research-team-lead가 `_workspace/kospi-bottom/01_research_synthesis.md` + `_workspace/kospi-bottom/01_research_escalations.md` 작성 완료
-6. PM은 `_workspace/kospi-bottom/01_research_escalations.md`를 읽어두되, **즉시 사용자에게 묻지 않는다** — 단, 분석의 전제 자체(고점/저점 정의 등 4장 시나리오 분기의 기준)를 흔드는 항목이면 예외적으로 이 시점에 바로 확인
+1. raw 12MF EPS/PER 빈티지 시계열이 없으면 **공개 리서치 증거 모드**를 활성화한다. public-research-evidence-curator를 semiconductor/macro/geopolitical/microstructure/behavioral 전문가와 병렬 스폰한다.
+2. 큐레이터가 `01_public-research-evidence-registry.md`를 완성하고 semiconductor 보고서가 준비된 뒤 valuation-quant-analyst와 historical-market-analyst를 병렬 스폰한다. 두 역할의 프롬프트에 레지스트리 경로를 필수 입력으로 전달한다.
+3. 8개 실무 산출물 전부 완료 알림을 받을 때까지 대기한다.
+4. research-team-lead를 스폰해 8개 산출물, 증거 레지스트리, source-family map을 검수·종합하도록 지시한다.
+5. research-team-lead가 검수 중 특정 전문가에게 재확인이 필요하면 PM이 해당 전문가를 이어서 호출한다.
+6. research-team-lead가 `01_research_synthesis.md`와 `01_research_escalations.md`를 작성한다. 종합본 첫 부분에는 현재 판정/확인된 근거/미확인/판단 변경 조건 표가 있어야 한다.
+7. PM은 에스컬레이션을 읽어두되, 분석 전제 자체를 흔드는 항목 외에는 Phase 5에서 일괄 확인한다.
 
 ### Phase 3: 웨이브 2 — 시나리오 (3명 병렬 → 순차 검토 3단 → 팀장 종합)
 
-1. `_workspace/kospi-bottom/01_research_synthesis.md`를 입력으로, 3명 시나리오 구축자(bull/bear-a/bear-b)를 한 메시지에서 동시에 `Agent(..., run_in_background: true)`로 병렬 스폰
-2. 3개 전부 완료되면 cross-red-team을 스폰 (3개 시나리오 보고서 경로 입력) → 완료되면 quant-validator를 스폰 (레드팀 결과까지 입력) → 완료되면 behavioral-finance-observer를 스폰 (전체 산출물 입력). 이 3단계는 각자 이전 산출물을 읽어야 하므로 **반드시 순차 스폰** — 병렬로 동시에 띄우지 않는다
+1. `_workspace/kospi-bottom/01_public-research-evidence-registry.md`와 `_workspace/kospi-bottom/01_research_synthesis.md`를 공통 입력으로, 3명 시나리오 구축자(bull/bear-a/bear-b)를 한 메시지에서 동시에 `Agent(..., run_in_background: true)`로 병렬 스폰
+2. 3개 전부 완료되면 cross-red-team을 스폰 (증거 레지스트리와 3개 시나리오 보고서 경로 입력) → 완료되면 quant-validator를 스폰 (증거 레지스트리와 레드팀 결과까지 입력) → 완료되면 behavioral-finance-observer를 스폰 (전체 산출물 입력). 이 3단계는 각자 이전 산출물을 읽어야 하므로 **반드시 순차 스폰** — 병렬로 동시에 띄우지 않는다
 3. behavioral-finance-observer까지 완료되면 scenario-team-lead를 스폰해 6개 산출물 전부를 검수·종합하도록 지시
 4. 검수 중 재작업이 필요하면 Phase 2와 동일하게 PM이 `SendMessage`로 해당 역할을 재호출
 5. scenario-team-lead가 `_workspace/kospi-bottom/02_scenario_synthesis.md` + `_workspace/kospi-bottom/02_scenario_escalations.md` + `_workspace/kospi-bottom/02_catalyst_calendar.md` 작성 완료
 
 ### Phase 4: 웨이브 3 — 투자위원회(IC) 심사 (risk-manager 병렬 → ic-chair 종합)
 
-1. `_workspace/kospi-bottom/01_research_synthesis.md` + `_workspace/kospi-bottom/02_scenario_synthesis.md`를 입력으로 `risk-manager`를 `Agent(..., run_in_background: true)`로 스폰
-2. risk-manager 완료 후, 그 산출물(`_workspace/kospi-bottom/03_risk-manager_report.md`)까지 포함해 `ic-chair`를 스폰 — risk-manager 없이 ic-chair를 먼저 스폰하지 않는다 (ic-chair가 risk-manager 산출물을 IC 메모에 통합해야 함)
+1. `_workspace/kospi-bottom/01_public-research-evidence-registry.md` + `_workspace/kospi-bottom/01_research_synthesis.md` + `_workspace/kospi-bottom/02_scenario_synthesis.md`를 입력으로 `risk-manager`를 `Agent(..., run_in_background: true)`로 스폰
+2. risk-manager 완료 후, 증거 레지스트리와 그 산출물(`_workspace/kospi-bottom/03_risk-manager_report.md`)까지 포함해 `ic-chair`를 스폰 — risk-manager 없이 ic-chair를 먼저 스폰하지 않는다 (ic-chair가 risk-manager 산출물을 IC 메모에 통합해야 함)
 3. ic-chair가 `_workspace/kospi-bottom/03_ic_memo.md` 작성 완료
 4. ic-chair 또는 risk-manager가 `NEEDS_CLARIFICATION`을 보고하면 PM이 직접 판단 (이 웨이브는 별도 팀장이 없으므로 PM이 1·2단계 에스컬레이션을 함께 처리) — 사소하면 미확인 가정에 기록, 중요하면 다음 Phase의 일괄 질문에 포함
 5. **여기서 나온 PASS/CONDITIONAL/CHALLENGE 등급은 "논리 검증 상태"이지 매수 신호가 아니다** — 대시보드에도 이 구분을 명확히 노출해야 함 (Phase 6 참조)
@@ -73,9 +74,17 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 ### Phase 5: PM 통합
 
 1. 리서치팀·시나리오팀·투자위원회 산출물 간 정합성 확인 — 시나리오팀이 리서치팀 사실관계를, ic-chair가 시나리오팀 사실관계를 왜곡 없이 인용했는지 대조
-2. `_workspace/kospi-bottom/01_research_escalations.md` + `_workspace/kospi-bottom/02_scenario_escalations.md` + (Phase 4에서 발생한 웨이브3 에스컬레이션)을 취합해 **한 번에** 사용자에게 확인 (AskUserQuestion 등으로 일괄 질문 — 여러 번 나눠 묻지 않는다)
-3. 사용자 답변을 반영해 관련 종합본의 해당 항목을 최종 확정 (필요시 담당 팀원 재호출 없이 PM이 직접 반영, 단 시나리오 해석에 큰 영향을 주면 담당 에이전트에게 반영 재작업 지시)
-4. **하나의 결론으로 강제 수렴시키지 않는다** — 세 시나리오와 확률, 조기경보 지표, IC 등급을 병렬로 유지
+2. **신뢰도 게이트**를 통과하지 못하면 Phase 6로 진행하지 않는다.
+   - 보고서 수를 독립 source family 수로 중복 계산하지 않았는가
+   - [ASSUMPTION]을 역사적 관측 임계값이나 실시간 트리거로 표시하지 않았는가
+   - P/E 분해에서 평가배수·이익 기여의 부호와 합이 맞는가
+   - 역산 EPS와 직접 관측 EPS를 구분했는가
+   - 보고서의 본문 요약과 표 산술을 재검산했는가
+   - 현재 판정에 “무엇이 확인되면 판단을 바꾸는지”가 연결됐는가
+   - 최종 HTML의 첫 화면과 본문이 금융업 종사자가 아닌 사용자도 전문용어 없이 이해할 수 있는가
+3. 리서치·시나리오·IC 에스컬레이션을 취합해 한 번에 사용자에게 확인한다.
+4. 사용자 답변을 반영해 관련 종합본의 해당 항목을 최종 확정한다.
+5. 하나의 결론으로 강제 수렴시키지 않는다.
 
 ### Phase 6: 산출물 생성
 
@@ -83,6 +92,30 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 1. `output/kospi-bottom/dashboard.html` — 인터랙티브(클라이언트 사이드 UI만, 데이터는 정적) 대시보드. Risk/Reward·촉매 캘린더·IC 심사 패널 포함
 2. `output/kospi-bottom/미확인_가정.md` — 확인 없이 진행한 모든 항목 (팀 내 조정 로그 + 사소해서 사용자에게 안 올린 항목 전부)
 3. 세 산출물(대시보드 2곳 + 미확인가정) 모두 "투자 조언이 아님 / IC 등급은 매수 신호가 아님" 명시 (대시보드는 눈에 띄는 위치에 고정 배너)
+
+#### 최종 HTML 쉬운말 원칙 — 필수 통과 조건
+
+최종 HTML은 분석팀 내부 보고서를 그대로 옮기는 문서가 아니라, 금융 전문지식이 없는 사용자가 결론과 다음 확인 항목을 이해하는 문서다.
+
+1. 제목·요약·표 제목·버튼·카드에는 설명 없는 영어 약어와 업계 용어를 쓰지 않는다.
+2. 전문용어는 가능한 한 아래처럼 뜻으로 바꿔 쓴다.
+   - `12MF EPS`, `EPS` → `앞으로 예상되는 기업 이익`
+   - `PER`, `P/E`, `valuation multiple` → `주가가 이익에 비해 얼마나 비싼지 보여주는 값`
+   - `revision breadth` → `이익 전망이 내려가는 기업의 범위`
+   - `capex` → `대형 기술기업의 실제 투자와 주문`
+   - `DRAM contract/spot price` → `메모리 반도체의 장기 거래가격과 당일 거래가격`
+   - `source family` → `서로 독립적인 원자료`
+   - `Risk/Reward`, `EV` → `오를 가능성과 내릴 위험`, `가능성을 반영한 평균 결과`
+   - `IC`, `PASS`, `CONDITIONAL`, `CHALLENGE` → `최종 검토`, `검토 통과`, `추가 확인 필요`, `다시 검토 필요`
+3. 원문 추적에 필요한 약어는 `<details>` 안의 `전문가용 근거` 또는 툴팁에만 보존한다. 쉬운말 본문을 읽는 데 약어를 알 필요가 없어야 한다.
+4. 숫자는 반드시 “그래서 무슨 뜻인지”를 같은 카드나 같은 표 칸에서 한 문장으로 설명한다.
+5. 한 문장에는 판단 하나만 쓴다. 한글로 바꿀 수 있는 영어(`bull`, `bear`, `trigger`, `breadth`, `static snapshot`)도 쓰지 않는다.
+6. PM은 HTML 완성 후 화면에 보이는 텍스트를 읽고 다음 질문에 일반어로 바로 답할 수 있는지 확인한다.
+   - 지금 무엇을 알고 있는가?
+   - 아직 무엇을 모르는가?
+   - 어떤 변화가 생기면 판단을 바꾸는가?
+   - 과거 자료를 어디까지 믿을 수 있는가?
+7. 설명 없이 전문용어가 하나라도 핵심 화면에 남아 있으면 Phase 6를 완료 처리하지 않는다.
 
 ### Phase 7: 정리 및 피드백
 
@@ -94,7 +127,8 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 
 ```
 [PM] → Phase1: raw데이터 확인
-     → Phase2: Agent×7 병렬 스폰(리서치) → research-team-lead 스폰 → 01_research_synthesis.md
+     → Phase2: 공개리서치 큐레이터+5개 도메인 병렬 → valuation+historical 병렬
+              → research-team-lead → evidence registry + 01_research_synthesis.md
      → Phase3: Agent×3 병렬 스폰(시나리오) → red-team→quant→behavioral 순차 스폰 → scenario-team-lead 스폰 → 02_scenario_synthesis.md, 02_catalyst_calendar.md
      → Phase4: risk-manager 스폰 → ic-chair 스폰 → 03_risk-manager_report.md, 03_ic_memo.md
      → Phase5: 에스컬레이션 일괄 확인 (사용자)
@@ -110,6 +144,7 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 | risk-manager 실패 | ic-chair 스폰 시 "구조적 리스크 섹션 미수집"으로 명시하고 진행 (risk-manager 없이 ic-chair만으로도 시나리오 등급 심사는 가능) |
 | ic-chair 실패 | 1회 재작업 지시, 재실패 시 IC 메모 없이 대시보드 진행하고 해당 패널에 "IC 심사 미수집" 표시 |
 | raw 데이터 미제공 | data-sourcing-protocol의 WEB 대체 절차로 진행, 미확인 가정에 전부 기록 |
+| 12MF EPS/PER 빈티지 raw 미제공 | 공개 리서치 증거 모드 활성화. A/B등급 원문 표·차트를 수집하고 source family 중복 제거. C등급 단독 임계값 금지 |
 | 산출물 간 사실관계 불일치 (하위 웨이브가 상위 웨이브 원자료를 잘못 인용) | PM이 Phase 5에서 발견 시 해당 에이전트를 `SendMessage`로 이어서 호출해 재작업 지시 |
 | 사용자가 Phase 5 질문에 답 없이 진행 요청 | 후보값 중 더 보수적인(비관 쪽에 가까운) 값을 채택하고 미확인 가정에 그 판단 근거 명시 |
 
@@ -118,7 +153,7 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 ### 정상 흐름
 1. 사용자가 "코스피 반도체 저점 분석해줘"로 트리거
 2. Phase 0에서 최초 실행 확인, Phase 1에서 raw 데이터 여부 확인(사용자가 일부만 보유)
-3. Phase 2에서 리서치 7명 병렬 조사 후 research-team-lead 종합
+3. Phase 2에서 공개 리서치 큐레이터와 독립 도메인 조사 → valuation·historical 분석 → research-team-lead 종합
 4. Phase 3에서 시나리오 3명 병렬 구축 + 레드팀·정량검증·행동재무관찰 순차 완료 후 scenario-team-lead 종합 + 촉매 캘린더
 5. Phase 4에서 risk-manager → ic-chair 순차 완료, 시나리오별 PASS/CONDITIONAL/CHALLENGE 등급 산출
 6. Phase 5에서 미해결 에스컬레이션 2건을 사용자에게 일괄 질문, 답변 반영
@@ -130,6 +165,24 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
 2. research-team-lead가 1회 재작업 지시 → 재실패
 3. `_workspace/kospi-bottom/01_research_synthesis.md`에 "지정학 섹션 일부 미수집" 명시하고 나머지로 진행
 4. Phase 5 통합 시 PM이 이 누락을 사용자에게 알림 (대시보드에도 해당 패널에 데이터 공백 표시)
+
+### 공개 리서치 증거 흐름
+1. 12MF EPS/PER 빈티지 raw 없이 실행해 공개 리서치 증거 모드가 자동 활성화되는지 확인
+2. 큐레이터가 원문 표·차트의 관측기간·정의·페이지·원 데이터 제공자를 기록하고 A~D 등급을 부여하는지 확인
+3. 동일 데이터 제공자와 동일 표본을 재인용한 보고서 3개를 입력했을 때 `report n=3`, `source family n=1`로 표시되는지 확인
+4. 10%·20% 이익 하향값을 입력했을 때 `[ASSUMPTION]`으로 격리되고 역사적 평균·저점 트리거 계산에서 제외되는지 확인
+5. 위 조건 중 하나라도 어기면 Phase 5 신뢰도 게이트가 실패해 대시보드 생성으로 넘어가지 않는지 확인
+
+### 밸류에이션 부호 회귀 테스트
+1. 가격은 하락하고 EPS는 상승한 사례를 입력한다.
+2. 로그 분해에서 평가배수 기여가 100%를 넘고 이익 기여가 음수(하락 상쇄)로 표시되는지 확인한다.
+3. 두 기여의 합이 100%인지, 화면에 `가격 86% / 이익 14%`처럼 두 항목이 모두 양수로 표시되지 않는지 확인한다.
+
+### 최종 HTML 쉬운말 회귀 테스트
+1. 화면에 보이는 제목·요약·표·카드만 추출한다.
+2. `EPS`, `PER`, `P/E`, `12MF`, `revision breadth`, `capex`, `Risk/Reward`, `EV`, `IC`, `source family`, `bull`, `bear`가 설명 없이 노출되는지 확인한다.
+3. 발견된 용어를 뜻이 드러나는 한국어 문장으로 바꾸고, 원문 추적용 표기는 접힌 `전문가용 근거` 안으로 이동한다.
+4. 첫 화면만 읽은 사용자가 현재 판단·확인된 사실·모르는 것·판단 변경 조건을 각각 한 문장으로 설명할 수 있어야 통과한다.
 
 ## 참고
 - 팀 구성 상세, 멤버 프롬프트 템플릿: `references/team-roster.md`

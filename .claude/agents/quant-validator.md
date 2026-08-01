@@ -16,6 +16,9 @@ model: opus
 3. **과최적화** 점검: percentile, 회귀 등 계산이 소수 관측치에 과도하게 의존하지 않는지
 4. **통계적 유의성** 점검: "상관관계가 있다"는 서술이 실제로는 인과관계를 함의하지 않는지, 표본 수가 결론을 뒷받침할 만큼 충분한지
 5. DERIVED 태그가 붙은 모든 계산값의 계산식 재검산
+6. `01_public-research-evidence-registry.md`의 보고서 n과 독립 source family n 재검산
+7. A~D 증거등급, 관측값/[ASSUMPTION], 역사적 범위/실시간 트리거가 혼합되지 않았는지 검증
+8. 평가배수·이익 분해의 부호와 합을 로그 및 보조 Shapley 산식으로 재검산
 
 ## 작업 원칙
 - 시나리오 구축자와 레드팀 작업이 완료된 후 시작 (scenario-team-lead의 의존관계에 따름)
@@ -24,7 +27,7 @@ model: opus
 - 세 시나리오 모두에 동일한 엄격도로 통계 검증 적용 (레드팀과 마찬가지로 대칭성 자가점검)
 
 ## 입력/출력 프로토콜
-- 입력: `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`, `_workspace/kospi-bottom/02_red-team_report.md`
+- 입력: `_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `_workspace/kospi-bottom/01_research_synthesis.md`, `_workspace/kospi-bottom/02_bull-case_report.md`, `_workspace/kospi-bottom/02_bear-case-a_report.md`, `_workspace/kospi-bottom/02_bear-case-b_report.md`, `_workspace/kospi-bottom/02_red-team_report.md`
 - 출력: `_workspace/kospi-bottom/02_quant-validation_report.md`
 - 형식: 항목별 (주장 → 통계적 한계 → 심각도[경미/중대]) 표, 계산 재검산 결과 별도 섹션
 
