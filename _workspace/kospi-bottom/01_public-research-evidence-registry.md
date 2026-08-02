@@ -428,6 +428,11 @@
 | 하나증권 이재만 실장(fnnews 2026-08-02 재인용) | 미표기 | `HANA_KOSPI_VAL_VIA_MEDIA` | 신규(C). 원문 미확보, 저점 배수 6.3배가 Goldman 11.4배와 상충 |
 | 이포커스/ZDNet Korea(2026-05~07, TrendForce 인용) | TrendForce/DRAMeXchange | `TRENDFORCE_DRAMEXCHANGE_CONTRACT` | 신규(C). DDR4 8Gb 등 월별 고정거래가 계열, 기존에 DRAM 계열 없었음 |
 | 산업통상자원부 보도자료(2026-07-01, 대신 JAEMINI 재수록) | 산업부 자체 집계(TrendForce 재공표 추정) | `MOTIE_MEMORY_PRICE` | 신규(B). NAND 128Gb 값이 DRAMeXchange와 사실상 일치 → `TRENDFORCE_DRAMEXCHANGE_CONTRACT`와 동일 family로 취급 권고 |
+| 하나증권 「[8월 주식시장 전망과 전략]」(이재만, 2026-08-03 표기, 원문 PDF 34p 전문 확보) | **Bloomberg** | `BLOOMBERG_KOSPI_12MF_PER` | 신규(A, 2026-08-02 2차 조사). 12MF PER 4.7배(7/30)·금융위기 저점 6.3배·장기평균 10.0배/-1σ 8.7배/-2σ 7.4배 원문 인쇄. Refinitiv/LSEG·FnGuide·FactSet 어느 계열과도 중복 아님. 단 fnnews가 이 리포트 근거로 붙인 "영업이익 695조→1,164조"는 본문 전수 검색 0건 — 하나증권 근거로 인용 금지 |
+| 신한투자증권 강진혁(머니투데이 2026-07-08 재인용), 대신증권 Morning Meeting Brief(2026-07-09, 제목만 확인) | 미표기(신한)/미표기(대신) | `SHINHAN_DAISHIN_KOSPI_PER_VIA_MEDIA` | 신규(C). 7/8 기준 12MF PER 6.19배(신한)·6.17배(대신)로 키움 6.25배와 같은 날짜대 값 — 고립값 아님을 뒷받침 |
+| 서울경제 2026-07-12(원출처 대만 DigiTimes) | DigiTimes(업계 소식통) | `DIGITIMES_HBM_PRICE` | 신규(C, 2차 조사 최초 확보). HBM3E $1.5~1.6/Gb, HBM4 하반기 ~$2/Gb. 범용 D램 고정거래가와 정의·단위 다름 |
+| 파이낸셜뉴스 2026-07-28(에프앤가이드 집계, 영업이익 추정 3개월 상향/하향 기업 수) | FnGuide | `FNGUIDE_OP_ESTIMATE_BREADTH` | 신규(C, 2차 조사 최초 확보). 2026-04-27~07-27 창, 262사 중 상향 157/하향 104(코스피만 127/72). `BLOOMBERG_KOSPI_BREADTH`(2013)와 지표·창·모집단 달라 시계열 연결 금지 |
+| Counterpoint Research 「Global Memory Price Tracker, July 2026」 | Counterpoint | `COUNTERPOINT_MEMORY_PRICE` | 신규. 존재만 확인, 전면 유료라 수치 0건 |
 
 ## 5. Assumption quarantine
 
@@ -459,6 +464,16 @@
 - 2026년 6~7월 동일 날짜 지수·PER 스냅숏(과거 §미확인 항목 2)은 **해소**됐다. 단 제공자·정의별로 12MF PER이 4.7~6.25배로 상충하므로 대시보드에는 단일값이 아니라 병기·NEEDS_CLARIFICATION으로 반영해야 한다.
 - Breadth(상향/하향 기업 수 비율, 갭 #7)는 **여전히 미해소**. 목표주가 리포트 건수(`FNGUIDE_TARGETPRICE_REPORT_COUNT`)·3개월 이익추정 변화율·국가단위 EPS 변화율 3종 프록시만 확보했고 정의가 달라 `BREADTH-2013-01`과 이어붙일 수 없다.
 - D램 고정거래가격은 신규 계열(`TRENDFORCE_DRAMEXCHANGE_CONTRACT`)로 **부분 해소**: DDR4 8Gb 등 4~6월 월별 데이터 확보. HBM 계약가와 2026년 7월 값은 여전히 미확보(8월 초 발표 예정).
+
+### 6-2. 2026-08-02 2차 추가조사 결과 (상세는 `07_gap_research_round2.md`)
+
+- **하나증권 원문 PDF를 확보해 4.7배를 C→A로 승격했다.** 원 데이터 제공자가 **Bloomberg**임이 밝혀지면서, 4.7배(Bloomberg)·6.1배(FnGuide)·5.09배(LSEG)·5.5배(MSCI Korea)의 차이는 **오류/상충이 아니라 제공자·지수정의·기준일 차이**로 재분류됐다. 12MF PER 묶음의 **독립 제공자는 이제 4개**(Bloomberg/FnGuide/LSEG/FactSet-MSCI)로 늘어 "현재 배수" 항목 자체의 독립성 요건은 충족된다. 단 fnnews(2026-08-02)가 하나증권 근거로 붙인 "영업이익 695조→1,164조" 수치는 원문 전수 검색 0건이므로 **하나증권 근거로 인용 금지**.
+- **키움 6.25배는 고립값이 아님**을 확인: 같은 7/8 기준일 신한 6.19배·대신 6.17배가 함께 확보됐다(키움 원문 자체는 여전히 미확보, C 유지).
+- **"6.3배(하나) vs 11.4배(Goldman) 정면 상충" 판정을 철회하고 "정의가 다른 두 통계량"으로 재분류**했다. 6.3배는 2008년 단일 최저점, 11.4배는 6개 저점 국면 "EPS 저점 시점" 선행 PER의 중앙값이다. 서로 다른 통계량이므로 공존 가능하며 모순이 아니다. Goldman 계열은 원 데이터 제공자 미표기로 여전히 C등급·중복 제거 불가.
+- **HBM 계약가를 처음 확보**했다: HBM3E $1.5~1.6/Gb, HBM4 하반기 ~$2/Gb (`DIGITIMES_HBM_PRICE`, C). 범용 D램 고정거래가와 정의·단위가 달라 같은 축에 두지 않는다.
+- **Breadth를 기업 수 기준으로 처음 확보**했다: FnGuide 집계, 2026-04-27~07-27 창, 262사 중 상향 157/하향 104(`FNGUIDE_OP_ESTIMATE_BREADTH`, C). "이익 하향이 일부 기업인지 시장 전반인지"에 1차 답은 가능해졌으나(코스피 기업 다수는 여전히 상향), `BLOOMBERG_KOSPI_BREADTH`(2013)와 지표·창·모집단이 달라 시계열 연결은 금지. 2008/2018/2022 과거 사건의 동일 정의 값은 여전히 부재.
+- **2026년 7월 D램 고정거래가**는 "미발표"가 아니라 **"7/31에 산출 완료, TrendForce Gold+ 유료회원 전용"**으로 성격이 바뀌었다. 다수 시나리오가 이를 명시적 폐기 조건으로 지목하므로, 유료 조달 여부는 PM 판단이 필요하다.
+- Goldman Sachs 원문은 여전히 기관 전용으로 미확보. 리포트명 1건(「KOSPI, Testing Key Technical Supports」, 7/14)을 확보했으나 33%/11.4배가 실린 밸류에이션 노트와 동일 문서라는 증거는 없어 동일시하지 않는다.
 
 ## 7. Reproducibility notes and source list
 
