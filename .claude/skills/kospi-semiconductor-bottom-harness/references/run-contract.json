@@ -1,0 +1,51 @@
+{
+  "contract_version": "1.0.0",
+  "as_of": "2026-08-01",
+  "inputs": {
+    "price": {
+      "path": "_workspace/kospi-bottom/00_input/krx_kospi_price_daily_2007_2026.csv",
+      "sha256": "29070803aada44e4ccdc171eb954f026336d317a76b46cbeea3553fe64a17a4f",
+      "required_columns": [
+        "date", "close", "change", "change_pct", "open", "high", "low",
+        "volume_thousand_shares", "trading_value_million_krw", "market_cap_million_krw"
+      ]
+    },
+    "valuation": {
+      "path": "_workspace/kospi-bottom/00_input/krx_kospi_per_pbr_daily_2007_2026.csv",
+      "sha256": "d8faab6b115e5eb5081382a14b892631e59aff30f2add8d3a13e7ebb0ed10d39",
+      "required_columns": ["date", "close", "change", "change_pct", "per", "pbr", "dividend_yield_pct"]
+    }
+  },
+  "dataset": {
+    "row_count": 4828,
+    "start_date": "2007-01-02",
+    "end_date": "2026-07-31",
+    "allowed_missing": {"pbr": 1}
+  },
+  "representative_observations": {
+    "2008-10-24": {"close": 938.75, "per": 7.40, "pbr": 0.78},
+    "2020-03-19": {"close": 1457.64, "per": 12.09, "pbr": 0.59},
+    "2022-09-30": {"close": 2155.49, "per": 9.26, "pbr": 0.83},
+    "2026-07-30": {"close": 5593.56, "per": 15.28, "pbr": 1.60},
+    "2026-07-31": {"close": 6595.45, "per": 18.03, "pbr": 1.88}
+  },
+  "distribution_checks": {
+    "per": {"min": 7.40, "p10": 10.82, "median": 14.53, "p90": 22.16},
+    "pbr": {"min": 0.59, "p10": 0.89, "median": 1.13, "p90": 1.48}
+  },
+  "percentile_checks": {
+    "2026-07-30": {"per_weak_pct": 60.5, "pbr_weak_pct": 94.0},
+    "2026-07-31": {"per_weak_pct": 78.9, "pbr_weak_pct": 98.3}
+  },
+  "artifacts": {
+    "_workspace/kospi-bottom/03_ic_memo.md": [
+      "IC 공식 최신 부록", "산출 불가", "CONDITIONAL", "LEGACY 감사기록"
+    ],
+    "output/kospi-bottom/미확인_가정.md": [
+      "가격 바닥 후보 / 실적 바닥 미확인", "산출 불가", "자동 갱신·알림·실시간 시세가 없는 정적 스냅샷"
+    ],
+    "output/kospi-bottom/dashboard.html": [
+      "투자 조언이 아닙니다", "현재 판단", "저점 확정이나 목표지수 제시 단계가 아닙니다", "KRX 4,828거래일", "추가 확인 필요"
+    ]
+  }
+}
