@@ -420,6 +420,14 @@
 | 유안타증권 2022-06-16 | 미표기 | `YUANTA_KOSPI_PBR` | 독립성 확인 불완전(B) |
 | 아시아경제 2020-03-23의 대신증권 인용 | 대신증권 추정, 원 제공자 미확인 | `DAISHIN_PBR_VIA_MEDIA` | C; 원문 미확보 |
 | 자본시장연구원 2019 시장 리뷰 | KCMI/시장자료 | `KCMI_MARKET_REVIEW` | 정성 트리거 보조, 수치 분포 미사용 |
+| 미래에셋증권 「2026 하반기 전망」(2026-05-22) | FnGuide | `FNGUIDE_KOSPI_12MF_EPS` | 신규(2026-08-02 추가조사). Refinitiv와 독립 계열 존재는 확인, 수치는 차트 미인쇄로 미확보(B) |
+| 신한투자증권 「2Q26 주식시장 전망」(2026-04-01) | 에프앤가이드/LSEG 혼용 | `FNGUIDE_KOSPI_12MF_EPS`(잠정) | 신규. 같은 보고서 안에서 제공자 표기가 혼재해 A가 아닌 B |
+| Goldman Sachs 한국 전략 코멘트(2026-07초, 언론 재인용) | 미확인 | `GS_KOREA_TROUGH_STUDY` | 신규(C). 원 제공자 미확인이라 Refinitiv 계열과 중복 제거 불가 |
+| 대신증권 「[AI Insight] KOSPI…」(2026-07-30, JAEMINI) | LSEG | `REFINITIV_KOSPI_12MF_EPS` | **중복**. AI 생성물 면책 명시로 B |
+| 파이낸셜뉴스 2026-07-19 (에프앤가이드 집계) | FnGuide | `FNGUIDE_TARGETPRICE_REPORT_COUNT` | 신규(C). 목표주가 리포트 건수이며 이익추정 상향/하향 기업 수 아님 — breadth 대체 금지 |
+| 하나증권 이재만 실장(fnnews 2026-08-02 재인용) | 미표기 | `HANA_KOSPI_VAL_VIA_MEDIA` | 신규(C). 원문 미확보, 저점 배수 6.3배가 Goldman 11.4배와 상충 |
+| 이포커스/ZDNet Korea(2026-05~07, TrendForce 인용) | TrendForce/DRAMeXchange | `TRENDFORCE_DRAMEXCHANGE_CONTRACT` | 신규(C). DDR4 8Gb 등 월별 고정거래가 계열, 기존에 DRAM 계열 없었음 |
+| 산업통상자원부 보도자료(2026-07-01, 대신 JAEMINI 재수록) | 산업부 자체 집계(TrendForce 재공표 추정) | `MOTIE_MEMORY_PRICE` | 신규(B). NAND 128Gb 값이 DRAMeXchange와 사실상 일치 → `TRENDFORCE_DRAMEXCHANGE_CONTRACT`와 동일 family로 취급 권고 |
 
 ## 5. Assumption quarantine
 
@@ -443,6 +451,14 @@
 7. **이익수정 breadth 장기 분포**: 2013 Bloomberg 한 사례와 2022 FactSet 국가 EPS 변화만 확보됐다. 상향/하향 종목 수 비율의 2008·2018·2022 동일 정의 자료가 필요하다.
 8. **원문 부재**: 2020 확정실적 PBR 0.586x는 대신증권 원문이 아니라 언론 재인용(C)이다. 원문 PDF 확보 전 단독 사용 금지.
 9. **Goldman Sachs ‘6개 저점’ 요약**: 공개 검색에서 Goldman Sachs 원문 보고서·표·발행일·페이지·원 데이터 제공자를 확인하지 못했다. 제3자 요약값도 이 레지스트리에서 재현 가능한 형태로 확보하지 못했으므로 **C등급 수치로조차 등록하지 않고 원문 미확보 공백**으로 둔다. 향후 원문 또는 추적 가능한 재인용을 확보하더라도 Refinitiv/FactSet 등 원 제공자를 확인해 기존 family와 중복 제거해야 한다.
+
+### 6-1. 2026-08-02 추가조사 결과 (상세는 `06_gap_research_followup.md`)
+
+- 위 갭 #1(독립 EPS 원계열)은 **부분 진전**: FnGuide가 KOSPI 12MF EPS 장기 계열을 실제로 공표한다는 사실은 공개 PDF 차트로 확인됐다(`FNGUIDE_KOSPI_12MF_EPS`). 다만 차트에 수치가 인쇄돼 있지 않아 2008/2018/2022 하락률 계산에는 아직 투입할 수 없다. **공백의 성격이 "계열 부재"에서 "수치 공개본 부재"로 바뀌었을 뿐, 사건 n=3/독립 family n=1 제약은 유지된다.**
+- Goldman Sachs 갭(#9)은 추적 가능한 언론 재인용(EPS -33%/-41%, 저점 선행 PER 11.4배)을 확보해 **C등급 등록까지는 도달**했으나 원 데이터 제공자 미표기로 여전히 Refinitiv 계열과 중복 제거 불가.
+- 2026년 6~7월 동일 날짜 지수·PER 스냅숏(과거 §미확인 항목 2)은 **해소**됐다. 단 제공자·정의별로 12MF PER이 4.7~6.25배로 상충하므로 대시보드에는 단일값이 아니라 병기·NEEDS_CLARIFICATION으로 반영해야 한다.
+- Breadth(상향/하향 기업 수 비율, 갭 #7)는 **여전히 미해소**. 목표주가 리포트 건수(`FNGUIDE_TARGETPRICE_REPORT_COUNT`)·3개월 이익추정 변화율·국가단위 EPS 변화율 3종 프록시만 확보했고 정의가 달라 `BREADTH-2013-01`과 이어붙일 수 없다.
+- D램 고정거래가격은 신규 계열(`TRENDFORCE_DRAMEXCHANGE_CONTRACT`)로 **부분 해소**: DDR4 8Gb 등 4~6월 월별 데이터 확보. HBM 계약가와 2026년 7월 값은 여전히 미확보(8월 초 발표 예정).
 
 ## 7. Reproducibility notes and source list
 
