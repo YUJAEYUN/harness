@@ -47,6 +47,24 @@ Harness는 Claude Code 생태계의 **L3 Meta-Factory** 층 — 다른 하네스
 - **오케스트레이션** — 에이전트 간 데이터 전달, 에러 핸들링, 팀 조율 프로토콜 포함
 - **검증 체계** — 트리거 검증, 드라이런 테스트, With-skill vs Without-skill 비교 테스트
 
+### 코드 우선 정적 리서치 런타임
+
+외부 OpenAPI·공시·기업 IR·기관 또는 증권사 자료를 질문 시점에만 가져와
+정적 Evidence Pack으로 만드는 경량 런타임을 함께 제공합니다. 수집·정규화·계산·해시·검증과
+스냅샷 비교는 Python 코드가 담당하고, AI 에이전트에는 검증을 통과한 관련 증거와 명시적인
+호출 예산만 전달합니다. 별도 서버 데이터베이스는 필요하지 않습니다.
+
+```bash
+python -m research_snapshot build \
+  --request examples/research_snapshot/request.json \
+  --run-dir /tmp/sample-hyperscaler-capex
+```
+
+실행 모드(`lookup`, `explain`, `analyze`, `deep_research`)에 따라 에이전트 사용량을 제한할 수
+있으며, 두 정적 스냅샷은 `python -m research_snapshot diff`로 비교할 수 있습니다. 자세한
+계약과 확장 방법은 [`docs/static-research-runtime.md`](docs/static-research-runtime.md)를
+참조하세요.
+
 ## 하네스 진화 메커니즘 (Harness Evolution Mechanism)
 
 하네스 진화 메커니즘은 "무엇이 먹혔고 무엇이 안 먹혔는가"의 델타를 팩토리로 되먹여, 다음 세대가 측정 가능하게 더 나아지도록 합니다. 실제 프로젝트에서 생성된 하네스가 사용될 때, `/harness:evolve` 스킬이 초기 아키텍처와 최종 출시 아키텍처 간 변화량을 포착해 팩토리로 되먹입니다. 다음번 같은 도메인에 대한 생성은 이 되먹임을 반영해 "출시 상태에 더 가까운 초안"에서 시작합니다.

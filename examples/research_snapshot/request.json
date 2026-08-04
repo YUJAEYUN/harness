@@ -1,0 +1,31 @@
+{
+  "run_id": "sample-hyperscaler-capex",
+  "question": "하이퍼스케일러 CAPEX는 어떤 방향인가?",
+  "as_of": "2026-08-04",
+  "mode": "analyze",
+  "agent_budget": {
+    "max_agents": 3,
+    "max_rounds": 1
+  },
+  "missing_data": [
+    "2027년 공식 CAPEX 가이던스"
+  ],
+  "sources": [
+    {
+      "id": "sample-capex",
+      "type": "local_csv",
+      "location": "examples/research_snapshot/sample_capex.csv",
+      "provider": "example-only",
+      "publisher": "example-only",
+      "source_family": "example-capex",
+      "evidence_grade": "D",
+      "field_map": {
+        "entity": "company",
+        "metric": "metric",
+        "value": "value",
+        "unit": "unit",
+        "observed_at": "observed_at"
+      }
+    }
+  ]
+}
