@@ -4,9 +4,32 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from .pipeline import build_snapshot, compare_snapshots
+
+
+def _load_dotenv(path: Path) -> None:
+    """Populate missing os.environ entries from a KEY=VALUE .env file.
+
+    Never overrides a variable already set in the real environment, so an
+    explicit `export` still wins over the file. Intentionally minimal (no
+    quoting/escaping rules beyond stripping surrounding quotes) to avoid a
+    third-party dependency for a single local secrets file.
+    """
+
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key:
+            os.environ.setdefault(key, value)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -28,6 +51,7 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    _load_dotenv(Path.cwd() / ".env")
     args = _parser().parse_args(argv)
     if args.command == "build":
         result = build_snapshot(args.request, args.run_dir)

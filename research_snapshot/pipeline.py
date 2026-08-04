@@ -24,7 +24,11 @@ REQUIRED_OBSERVATION_FIELDS = {
     "source_id",
 }
 ALLOWED_MODES = {"lookup", "explain", "analyze", "deep_research"}
-MODE_MAX_AGENTS = {"lookup": 0, "explain": 1, "analyze": 3, "deep_research": 18}
+# deep_research was originally set to 18 to match the kospi-semiconductor-bottom-harness
+# headcount. docs/personal-market-research-agent-architecture.md's own migration goal is
+# to shrink that fixed 18-person call down to a task-selected pool of 4-7 experts, so the
+# ceiling here now reflects that target instead of the pre-refactor number.
+MODE_MAX_AGENTS = {"lookup": 0, "explain": 1, "analyze": 3, "deep_research": 7}
 
 
 class SnapshotError(ValueError):

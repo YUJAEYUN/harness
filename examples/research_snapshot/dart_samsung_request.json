@@ -1,0 +1,38 @@
+{
+  "run_id": "samsung-electronics-disclosures",
+  "question": "삼성전자 최근 공시에 어떤 변화가 있는가?",
+  "as_of": "2026-08-04",
+  "mode": "lookup",
+  "allow_dynamic_collectors": true,
+  "missing_data": [],
+  "sources": [
+    {
+      "id": "dart-samsung",
+      "type": "generated_json",
+      "provider": "금융감독원 DART",
+      "publisher": "삼성전자",
+      "source_family": "dart-official",
+      "evidence_grade": "A",
+      "value_type": "string",
+      "collector": {
+        "command": [
+          "python3",
+          "collectors/dart_disclosures.py",
+          "--corp-code", "00126380",
+          "--bgn-de", "20260701",
+          "--end-de", "20260804"
+        ],
+        "cwd": ".",
+        "env": ["DART_API_KEY"],
+        "code_paths": ["collectors/dart_disclosures.py"]
+      },
+      "field_map": {
+        "entity": "company",
+        "metric": "metric",
+        "value": "value",
+        "unit": "unit",
+        "observed_at": "observed_at"
+      }
+    }
+  ]
+}

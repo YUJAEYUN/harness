@@ -71,9 +71,11 @@ API 또는 브라우저 수집 코드를 쓸 수 있지만, 원문 보존·실�
 
 범용 시스템에서 항상 사용할 에이전트는 세 종류면 충분하다.
 
+> **구현 상태 (2026-08-04)**: `.claude/agents/research-router.md`, `.claude/agents/research-editor.md`로 구현됨. 아래 A의 6개 분류명은 판단을 위한 개념적 분류이고, 실제로 라우터가 출력하는 `mode` 필드는 `research_snapshot` 파이프라인이 검증하는 `lookup`/`explain`/`analyze`/`deep_research` 4개뿐이다 — 둘의 매핑표는 `research-routing` 스킬에 있다. `deep_research`의 에이전트 상한은 18(옛 코스피 하네스 인원수)이 아니라 이 문서의 목표치인 7로 코드에 반영돼 있다(`pipeline.py`의 `MODE_MAX_AGENTS`).
+
 #### A. 리서치 라우터
 
-- 질문을 `lookup`, `monitor`, `document_review`, `screen`, `risk`, `deep_research`로 분류한다.
+- 질문을 `lookup`, `monitor`, `document_review`, `screen`, `risk`, `deep_research`로 분류한다 (개념적 분류 — 실제 파이프라인 `mode`로의 매핑은 `research-routing` 스킬 참조).
 - 필요한 데이터·계산·전문가와 토큰 예산을 구조화된 계획으로 출력한다.
 - 직접 웹검색, 숫자 계산, 최종 의견 작성을 하지 않는다.
 
@@ -83,6 +85,7 @@ API 또는 브라우저 수집 코드를 쓸 수 있지만, 원문 보존·실�
 - `확인된 사실 / 해석 / 가설 / 반대 근거 / 미확인 / 판단 변경 조건`을 분리한다.
 - 숫자를 새로 만들거나 원문에 없는 목표가·확률을 추가하지 않는다.
 - 산출물을 항상 `drafts, not decisions`로 취급한다.
+- 출력 스키마에 `recommendation`/`order`/`target_position` 필드 자체가 없다 (`research-editing` 스킬 참조) — 문구 필터가 아니라 구조적 제약.
 
 #### C. 반론 검토자
 

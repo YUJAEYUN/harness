@@ -152,6 +152,19 @@ class ResearchSnapshotTests(unittest.TestCase):
             pack = json.loads((root / "run/evidence/evidence_pack.json").read_text())
             self.assertEqual(250.0, pack["observations"][0]["value"])
 
+    def test_deep_research_budget_matches_lean_expert_pool_target(self):
+        # Pins MODE_MAX_AGENTS["deep_research"] to the architecture doc's stated
+        # 4-7 expert target instead of the old fixed 18-person kospi headcount.
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            request_path = self._request(root, 200)
+            request = json.loads(request_path.read_text())
+            request["mode"] = "deep_research"
+            request["agent_budget"] = {"max_agents": 8, "max_rounds": 1}
+            request_path.write_text(json.dumps(request))
+            with self.assertRaisesRegex(SnapshotError, "allows at most 7 agents"):
+                build_snapshot(request_path, root / "run")
+
     def test_generated_collector_requires_explicit_opt_in(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
