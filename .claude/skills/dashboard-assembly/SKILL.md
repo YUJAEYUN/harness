@@ -1,11 +1,22 @@
 ---
 name: dashboard-assembly
-description: "리서치팀·시나리오팀·투자위원회 종합 산출물을 인터랙티브 HTML 대시보드로 조립하는 방법론. 코스피 반도체 급락 저점 분석 하네스의 PM(오케스트레이터)이 Phase 6 산출물 생성 단계에서 사용."
+description: "리서치팀·시나리오팀·투자위원회 종합 산출물을 최종 HTML로 조립하는 방법론. 코스피 반도체 급락 저점 분석 하네스의 PM(오케스트레이터)이 Phase 6 산출물 생성 단계에서 사용. 공식 최종본은 research_note.html(내러티브 리서치노트), dashboard.html은 전문가용 상세보기(선택)."
 ---
 
 # Dashboard Assembly
 
-`_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `01_research_synthesis.md`, `02_scenario_synthesis.md`, `02_catalyst_calendar.md`, `03_risk-manager_report.md`, `03_ic_memo.md`를 하나의 정적 HTML 대시보드로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 클라이언트 사이드 UI로 한정한다.
+`_workspace/kospi-bottom/01_public-research-evidence-registry.md`, `01_research_synthesis.md`, `02_scenario_synthesis.md`, `02_catalyst_calendar.md`, `03_risk-manager_report.md`, `03_ic_memo.md`를 최종 HTML로 조립한다. 데이터는 오늘 스냅샷으로 고정하고, 인터랙션은 클라이언트 사이드 UI로 한정한다.
+
+## 두 산출물의 역할 분담 (필수)
+
+실사용 결과, 패널형 대시보드는 첫 화면 이해도가 낮아 아티클(내러티브) 형식의 별도 문서가 더 잘 읽힌다는 피드백(2026-08-04)을 반영해 역할을 분리했다.
+
+| 산출물 | 역할 | 검증기 대상 |
+|---|---|---|
+| `output/kospi-bottom/research_note.html` | **공식 최종본.** 기승전결이 있는 기사 형식 — 어긋남(가격 vs 밸류에이션) 프레임 도입 → 과거 사례 비교표 → 시나리오 3분기 → 판단 변경 조건 → 마무리 고지. 처음 읽는 사용자가 스크롤 한 번으로 결론을 따라갈 수 있어야 한다. | 필수 (`run-contract.json`) |
+| `output/kospi-bottom/dashboard.html` | (선택) 전문가용 상세보기. 아래 "필수 패널" 목록대로 패널 단위 조립 — 표·근거를 항목별로 훑어보고 싶을 때 참조. | 선택 (생성 시 원자료 정합성만 유지) |
+
+research_note.html 하단 footer에 dashboard.html로의 링크를 반드시 포함한다(반대 방향 링크도 권장). 아래 "쉬운말 화면과 전문가용 근거 분리", "첫 화면 의사결정 블록"은 두 산출물 모두에 적용되는 원칙이지만, **research_note.html에서는 필수, dashboard.html에서는 권장**이다.
 
 ## 착수 전
 
@@ -94,5 +105,5 @@ description: "리서치팀·시나리오팀·투자위원회 종합 산출물을
 
 ## 산출 및 전달
 
-- 파일: `output/kospi-bottom/dashboard.html` (자체완결형 — 외부 CDN/폰트 의존 없이 인라인 CSS/JS)
+- 파일: `output/kospi-bottom/research_note.html`(공식 최종본, 필수) + `output/kospi-bottom/dashboard.html`(전문가용 상세보기, 선택) — 둘 다 자체완결형(외부 CDN/폰트 의존 없이 인라인 CSS/JS)
 - 완성 후 사용자에게 파일로 전달 (SendUserFile 등) — Artifact로 공개 게시할지는 사용자에게 먼저 확인 (분석 대상이 투자 관련 민감 판단이므로 기본은 비공개 전달)

@@ -81,7 +81,7 @@ description: "코스피 반도체 급락 저점 판단 분석 하네스의 총�
    - 역산 EPS와 직접 관측 EPS를 구분했는가
    - 보고서의 본문 요약과 표 산술을 재검산했는가
    - 현재 판정에 “무엇이 확인되면 판단을 바꾸는지”가 연결됐는가
-   - 최종 HTML의 첫 화면과 본문이 금융업 종사자가 아닌 사용자도 전문용어 없이 이해할 수 있는가
+   - research_note.html의 첫 화면과 본문이 금융업 종사자가 아닌 사용자도 전문용어 없이 이해할 수 있는가
 3. 리서치·시나리오·IC 에스컬레이션을 취합해 한 번에 사용자에게 확인한다.
 4. 사용자 답변을 반영해 관련 종합본의 해당 항목을 최종 확정한다.
 5. 하나의 결론으로 강제 수렴시키지 않는다.
@@ -102,15 +102,16 @@ python3 .claude/skills/kospi-semiconductor-bottom-harness/scripts/validate_run.p
 
 ### Phase 6: 산출물 생성
 
-`dashboard-assembly` 스킬을 사용해 HTML 대시보드를 생성한다. 함께 생성할 것:
-1. `output/kospi-bottom/dashboard.html` — 인터랙티브(클라이언트 사이드 UI만, 데이터는 정적) 대시보드. Risk/Reward·촉매 캘린더·IC 심사 패널 포함
-2. `output/kospi-bottom/미확인_가정.md` — 확인 없이 진행한 모든 항목 (팀 내 조정 로그 + 사소해서 사용자에게 안 올린 항목 전부)
-3. 세 산출물(대시보드 2곳 + 미확인가정) 모두 "투자 조언이 아님 / IC 등급은 매수 신호가 아님" 명시 (대시보드는 눈에 띄는 위치에 고정 배너)
-4. 산출물 생성 후 Phase 5-1 검증기를 다시 실행해 `validation_report.json` 상태가 `PASS`인지 확인한다.
+`dashboard-assembly` 스킬을 사용해 산출물을 생성한다. **공식 최종본은 `research_note.html`이다** — dashboard.html은 첫 화면 이해도가 떨어져 별도로 아티클 형식을 만든 것이 실사용 결과 더 잘 읽힌다는 사용자 피드백(2026-08-04)에 따라 격하됨. 함께 생성할 것:
+1. `output/kospi-bottom/research_note.html` — **공식 최종본**. 내러티브(기사) 형식의 쉬운말 리서치노트. `run-contract.json`의 검증 대상이며, Phase 6-1 "최종 HTML 쉬운말 원칙"이 이 파일에 적용된다.
+2. `output/kospi-bottom/dashboard.html` — (선택, 전문가용 상세보기) 패널형 대시보드. Risk/Reward·촉매 캘린더·IC 심사 패널 등 research_note.html보다 세부적인 표·근거를 훑어보고 싶은 사용자용. research_note.html 하단에 이 파일로의 링크를 반드시 포함한다. 검증기의 필수 통과 대상은 아니지만, 생성한다면 동일한 원자료·수치와 정합해야 한다.
+3. `output/kospi-bottom/미확인_가정.md` — 확인 없이 진행한 모든 항목 (팀 내 조정 로그 + 사소해서 사용자에게 안 올린 항목 전부)
+4. 산출물(research_note.html 필수, dashboard.html 선택, 미확인가정) 모두 "투자 조언이 아님 / IC 등급은 매수 신호가 아님" 명시. research_note.html은 서두와 마무리 두 곳에 고정 고지.
+5. 산출물 생성 후 Phase 5-1 검증기를 다시 실행해 `validation_report.json` 상태가 `PASS`인지 확인한다.
 
-#### 최종 HTML 쉬운말 원칙 — 필수 통과 조건
+#### 최종 HTML(research_note.html) 쉬운말 원칙 — 필수 통과 조건
 
-최종 HTML은 분석팀 내부 보고서를 그대로 옮기는 문서가 아니라, 금융 전문지식이 없는 사용자가 결론과 다음 확인 항목을 이해하는 문서다.
+공식 최종본인 research_note.html은 분석팀 내부 보고서를 그대로 옮기는 문서가 아니라, 금융 전문지식이 없는 사용자가 결론과 다음 확인 항목을 이해하는 문서다. dashboard.html은 전문가용 상세보기로 격하됐으므로 이 원칙의 필수 통과 대상이 아니지만, 가능한 한 같은 기준을 따르는 것을 권장한다.
 
 1. 제목·요약·표 제목·버튼·카드에는 설명 없는 영어 약어와 업계 용어를 쓰지 않는다.
 2. 전문용어는 가능한 한 아래처럼 뜻으로 바꿔 쓴다.
@@ -198,8 +199,8 @@ python3 .claude/skills/kospi-semiconductor-bottom-harness/scripts/validate_run.p
 2. 정상 스냅샷이 계약을 통과하고, 원자료 한 값을 변조한 임시 본은 SHA-256 검사에서 반드시 실패해야 한다.
 3. 검증 항목을 축소하거나 해시 검사를 우회해 테스트를 통과시키지 않는다.
 
-### 최종 HTML 쉬운말 회귀 테스트
-1. 화면에 보이는 제목·요약·표·카드만 추출한다.
+### 최종 HTML(research_note.html) 쉬운말 회귀 테스트
+1. research_note.html 화면에 보이는 제목·요약·표·카드만 추출한다 (dashboard.html은 전문가용 상세보기로 이 회귀 테스트의 필수 대상이 아니다).
 2. `EPS`, `PER`, `P/E`, `12MF`, `revision breadth`, `capex`, `Risk/Reward`, `EV`, `IC`, `source family`, `bull`, `bear`가 설명 없이 노출되는지 확인한다.
 3. 발견된 용어를 뜻이 드러나는 한국어 문장으로 바꾸고, 원문 추적용 표기는 접힌 `전문가용 근거` 안으로 이동한다.
 4. 첫 화면만 읽은 사용자가 현재 판단·확인된 사실·모르는 것·판단 변경 조건을 각각 한 문장으로 설명할 수 있어야 통과한다.
