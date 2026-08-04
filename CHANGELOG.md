@@ -4,10 +4,15 @@
 
 ## [Unreleased]
 
+- Added opt-in agent-authored dynamic collectors for API, browser automation, and generated parsing, with bounded execution, raw output capture, stderr logs, and collector code hashes.
+- Added a personal market-research agent architecture that replaces fixed full-team execution with policy gates, deterministic workflows, a three-agent core, and an on-demand specialist pool.
+
 ### Added
 - 신규 에이전트/스킬 생성 전 중복 검토 단계 (Phase 3-0, Phase 4-0)
 - `references/agent-design-patterns.md` "에이전트 재사용 설계" 섹션
 - `references/skill-writing-guide.md` §9 "스킬 재사용 설계"
+- 외부 CSV·JSON 자료를 온디맨드로 수집하고 정규화·해시·검증해 Evidence Pack을 만드는 코드 우선 정적 리서치 런타임
+- 질문 모드별 에이전트 예산 제한과 두 정적 스냅샷의 추가·삭제·값 변경 비교 CLI
 
 ### Changed
 - Phase 선택 매트릭스에 3-0/4-0 명시
