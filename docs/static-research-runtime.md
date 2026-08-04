@@ -80,3 +80,66 @@ Never average values merely because providers disagree. Keep separate
 observations when dates, populations, accounting definitions, or source families
 differ, and ask an agent to explain the difference only after code has preserved
 it.
+
+## Agent-authored dynamic collectors
+
+An agent may write a short collector at runtime and ask the snapshot runtime to
+execute it. This is the escape hatch for authenticated APIs, pagination, HTML,
+PDF extraction, or browser automation. Dynamic execution is deliberately opt-in:
+the top-level request must contain `"allow_dynamic_collectors": true`.
+
+The collector must write a CSV or JSON record set to **stdout**. Diagnostics go
+to stderr. The runtime invokes the command as an argument array without a shell,
+captures stdout as the immutable raw input, saves stderr beside it, hashes the
+declared collector code, and then runs the normal parser, normalization, and
+validation pipeline. It also exposes `RESEARCH_RAW_DIR`; collectors should save
+the original API response, HTML, PDF, screenshot, or browser download there.
+Every file written there is hashed into the collector manifest.
+
+```json
+{
+  "allow_dynamic_collectors": true,
+  "sources": [{
+    "id": "meta-capex",
+    "type": "generated_json",
+    "provider": "Meta investor relations",
+    "publisher": "Meta",
+    "source_family": "meta-official-ir",
+    "evidence_grade": "A",
+    "collector": {
+      "command": ["python", "collectors/meta_capex.py"],
+      "cwd": ".",
+      "timeout_seconds": 120,
+      "env": ["META_API_TOKEN"],
+      "code_paths": ["collectors/meta_capex.py"]
+    },
+    "field_map": {
+      "entity": "company",
+      "metric": "metric",
+      "value": "value",
+      "unit": "unit",
+      "observed_at": "observed_at"
+    }
+  }]
+}
+```
+
+The same contract supports three acquisition styles:
+
+1. **API collector:** generated Python calls an official API, follows pagination,
+   and prints normalized candidate records as JSON.
+2. **Browser collector:** generated Playwright/Selenium code opens a public page,
+   downloads or extracts the document, and prints records as JSON. Browser
+   dependencies must already exist in the runtime environment.
+3. **Generated parser:** generated code reads a previously downloaded PDF/HTML,
+   extracts tables, and prints CSV or JSON.
+
+The agent is responsible for authoring the collector and registering the source;
+the deterministic runtime remains responsible for execution limits, raw capture,
+hashing, normalization, and fail-closed validation. API keys must be passed by
+environment-variable name through `collector.env`, never embedded in the request
+or generated script.
+
+This feature executes code and can access the network and files available to the
+process. Only enable it for trusted agents and run it inside the platform's normal
+sandbox/container. The opt-in is a safety boundary, not a security sandbox.

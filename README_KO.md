@@ -65,6 +65,18 @@ python -m research_snapshot build \
 계약과 확장 방법은 [`docs/static-research-runtime.md`](docs/static-research-runtime.md)를
 참조하세요.
 
+고정 URL만으로 수집할 수 없는 자료는 에이전트가 실행 시점에 Python 또는 브라우저 자동화
+수집기를 작성하고 `generated_csv`/`generated_json` 소스로 등록할 수 있습니다. 이 기능은
+명시적으로 `allow_dynamic_collectors`를 켠 요청에서만 동작하며, 런타임은 셸 없이 수집기를
+실행해 stdout 레코드·stderr 로그·수집기 코드 해시를 보존한 뒤 기존 검증 파이프라인에
+연결합니다. 브라우저 응답·PDF·스크린샷 같은 원문도 전용 raw 디렉터리에 보존·해시할 수
+있으며, API 키는 요청 파일이 아니라 환경변수로 전달합니다.
+
+개인용 증권시장 리서치 시스템으로 확장할 때의 권장 에이전트 구성, 다섯 가지 핵심
+워크플로우, 코드·AI 책임 경계와 기존 18명 하네스의 경량화 방안은
+[`docs/personal-market-research-agent-architecture.md`](docs/personal-market-research-agent-architecture.md)에
+정리되어 있습니다.
+
 ## 하네스 진화 메커니즘 (Harness Evolution Mechanism)
 
 하네스 진화 메커니즘은 "무엇이 먹혔고 무엇이 안 먹혔는가"의 델타를 팩토리로 되먹여, 다음 세대가 측정 가능하게 더 나아지도록 합니다. 실제 프로젝트에서 생성된 하네스가 사용될 때, `/harness:evolve` 스킬이 초기 아키텍처와 최종 출시 아키텍처 간 변화량을 포착해 팩토리로 되먹입니다. 다음번 같은 도메인에 대한 생성은 이 되먹임을 반영해 "출시 상태에 더 가까운 초안"에서 시작합니다.

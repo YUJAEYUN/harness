@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+- Added opt-in agent-authored dynamic collectors for API, browser automation, and generated parsing, with bounded execution, raw output capture, stderr logs, and collector code hashes.
+- Added a personal market-research agent architecture that replaces fixed full-team execution with policy gates, deterministic workflows, a three-agent core, and an on-demand specialist pool.
+
 ### Added
 - 신규 에이전트/스킬 생성 전 중복 검토 단계 (Phase 3-0, Phase 4-0)
 - `references/agent-design-patterns.md` "에이전트 재사용 설계" 섹션
