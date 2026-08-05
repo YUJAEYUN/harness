@@ -88,6 +88,32 @@
     border-top:1px solid var(--rule);padding-top:18px}
   footer a{color:var(--sub)}
   a{color:var(--navy)}
+
+  .snapshot{font-family:"Noto Sans KR",sans-serif;background:#fff;
+    border:1px solid var(--line);margin:0 0 40px}
+  .snapshot-head{background:var(--navy);color:#f3efe5;font-size:12.5px;
+    font-weight:800;letter-spacing:.05em;padding:10px 18px}
+  .snapshot-body{padding:18px 20px 4px}
+  .snapshot-row{margin:0 0 18px}
+  .snapshot-row:last-child{margin-bottom:0}
+  .snapshot-label{font-size:11.5px;font-weight:800;color:var(--sub);
+    letter-spacing:.04em;margin:0 0 7px}
+  .snapshot-verdict{font-size:16.5px;font-weight:700;line-height:1.65;color:var(--ink)}
+  .snapshot ul{margin:0;padding-left:19px;font-size:14px;line-height:1.75}
+  .snapshot li{margin:0 0 7px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;
+    margin-right:6px;white-space:nowrap;vertical-align:1px}
+  .tag-raw{background:var(--amber-soft);color:var(--amber)}
+  .tag-gap{background:var(--red-soft);color:var(--red)}
+
+  .appendix{font-family:"Noto Sans KR",sans-serif}
+  .appendix table{font-size:13px}
+  .appendix .tag{margin-right:0}
+
+  .colophon{font-family:"Noto Sans KR",sans-serif;font-size:12.5px;
+    color:var(--sub);background:#f2ede1;border:1px solid var(--rule);
+    padding:14px 16px;margin:0 0 26px;line-height:1.8}
+  .colophon b{color:var(--ink)}
 </style>
 </head>
 <body>
@@ -100,6 +126,42 @@
     <div class="byline">2026-08-02 발행 · 2026-08-01 KRX 원자료(2차 추가조사 반영) 기준</div>
 
     <div class="lede-disclaimer"><b>이 글은 투자 조언이 아니다.</b> 매수·매도 신호를 주지 않는다. 여기 담긴 건 지금까지 확인된 사실과, 아직 확인되지 않은 것들이다.</div>
+
+    <div class="snapshot">
+      <div class="snapshot-head">한눈에 보기 · 2026-08-01 원자료 기준 정적 스냅샷</div>
+      <div class="snapshot-body">
+        <div class="snapshot-row">
+          <div class="snapshot-label">지금의 판단</div>
+          <div class="snapshot-verdict">가격은 역대 최고 속도로 빠지고 하루 만에 크게 반등했지만, 과거 진짜 바닥 때 항상 있었던 &lsquo;쌌다&rsquo;는 증거는 이번엔 없다 &mdash; 밸류에이션 바닥은 아직 미확인.</div>
+        </div>
+        <div class="snapshot-row">
+          <div class="snapshot-label">확인된 근거 (원자료 기준)</div>
+          <ul>
+            <li><span class="tag tag-raw">KRX 원자료</span>코스피 6/22 고점 &rarr; 7/30 저점 <strong>-38.6%, 38일</strong> &mdash; 과거 6번의 큰 하락 중 가장 빠른 속도</li>
+            <li><span class="tag tag-raw">KRX 원자료</span>7/30 저점 PER 15.28배(과거 거래일의 60%보다 높음), PBR 1.60배(과거 거래일의 94%보다 높음)</li>
+            <li><span class="tag tag-raw">KRX 재계산</span>2008&middot;2020&middot;2022년 저점 PER 7.40~12.09배, PBR 0.59~0.83배 &mdash; 이번 저점과 뚜렷한 차이</li>
+          </ul>
+        </div>
+        <div class="snapshot-row">
+          <div class="snapshot-label">아직 확인 못한 핵심</div>
+          <ul>
+            <li><span class="tag tag-gap">자료 공백</span>코스피 앞으로 예상되는 기업 이익의 서로 독립된 두 번째 자료 계열 &mdash; 현재 1개 자료로만 확인</li>
+            <li><span class="tag tag-gap">자료 공백</span>이익 전망이 나빠지는 기업 수의 과거(2008&middot;2018&middot;2022) 비교값</li>
+            <li><span class="tag tag-gap">자료 공백</span>메모리 반도체 7월 실제 거래가격 (집계는 끝났으나 유료 자료라 미확인)</li>
+          </ul>
+        </div>
+        <div class="snapshot-row">
+          <div class="snapshot-label">판단이 바뀌는 조건</div>
+          <ul>
+            <li>앞으로 예상되는 기업 이익이 계속 줄어드는지, 멈추는지</li>
+            <li>메모리 반도체 장기 거래가격의 오름세가 꺾이는지</li>
+            <li>대형 기술기업의 실제 투자&middot;주문 취소가 나타나는지</li>
+            <li>돈 빌리는 비용&middot;환율&middot;외국인 매매의 방향 전환이 하루짜리가 아니라 이어지는지</li>
+            <li>정책이 발표를 넘어 실제로 집행되는지</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <article>
       <p class="open">코스피는 6월 22일 고점을 찍은 뒤 38일 만에 38.6% 빠졌다. 그리고 하루 만에 17.9% 반등했다. 하락 속도만 보면 지난 20년의 큰 하락 여섯 번 중 가장 빨랐다.</p>
@@ -224,8 +286,37 @@
 
       <p>코스피는 역대급 속도로 빠졌다가 하루 만에 크게 반등했다. 하지만 과거 세 번의 진짜 바닥과 달리, 이번 저점엔 &lsquo;쌌다&rsquo;는 증거가 없다. 이 어긋남이 좋은 흐름 쪽으로 풀리려면 이익이 지금의 값을 따라와야 하고, 나쁜 흐름 쪽으로 풀리면 밸류에이션이라는 완충장치 없이 추가 하락에 노출된다. 앞으로의 기업 이익 자료가 없는 한 어느 쪽인지는 확정할 수 없다.</p>
 
+      <div class="divider">· · ·</div>
+
+      <div class="subhead">부록: 이 글이 근거로 삼은 원자료 관측값</div>
+
+      <p>본문 표에 흩어진 숫자를 한곳에 모았다. 전부 KRX 코스피 일별 시세·PER·PBR 원자료(2007-01-02~2026-07-31, 4,828거래일)에서 직접 확인했거나 같은 방식으로 재계산한 값이다.</p>
+
+      <div class="figure appendix">
+        <div class="figure-cap">주요 관측일 원자료 (KRX 원자료 · 직접 확인)</div>
+        <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>날짜</th><th>종가</th><th>PER</th><th>PBR</th><th>과거 대비 위치</th></tr></thead>
+          <tbody>
+            <tr><td>2008-10-24 (금융위기 저점)</td><td>938.75</td><td>7.40</td><td>0.78</td><td>PER·PBR 모두 전체 기간 최저권</td></tr>
+            <tr><td>2020-03-19 (코로나 저점)</td><td>1,457.64</td><td>12.09</td><td>0.59</td><td>PBR 최저권, PER은 이익 급감으로 왜곡</td></tr>
+            <tr><td>2022-09-30 (금리상승 저점)</td><td>2,155.49</td><td>9.26</td><td>0.83</td><td>PER·PBR 모두 전체 기간 하위 약 2%</td></tr>
+            <tr><td><strong>2026-07-30 (이번 저점)</strong></td><td><strong>5,593.56</strong></td><td><strong>15.28</strong></td><td><strong>1.60</strong></td><td>PER 상위 약 40%, PBR 상위 약 6%</td></tr>
+            <tr><td>2026-07-31 (반등 다음날)</td><td>6,595.45</td><td>18.03</td><td>1.88</td><td>PER 상위 약 21%, PBR 상위 약 2% &mdash; 저점보다 오히려 더 비싸진 구간</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <div class="figure-cap">전체 기간(2007~2026) 분포: PER 최소 7.40 · 10백분위 10.82 · 중앙값 14.53 · 90백분위 22.16 / PBR 최소 0.59 · 10백분위 0.89 · 중앙값 1.13 · 90백분위 1.48</div>
+      </div>
+
       <div class="closer">이 글은 투자 조언이 아니다. 여기 담긴 건 자료가 얼마나 탄탄한지에 대한 검증이지, 매수·매도 신호가 아니다. 이 글은 2026-08-01 원자료를 반영한 정적 분석이며 자동으로 새로 고쳐지지 않는다. 최종 투자 판단은 읽는 사람의 몫이다.</div>
     </article>
+
+    <div class="colophon">
+      <p><b>이 글은 어떻게 만들어졌나.</b> 사람 애널리스트 한 명이 아니라, 서로 다른 역할을 맡은 다수의 조사·검증 에이전트가 리서치 → 시나리오 → 사후 심사 세 단계를 거쳐 만든 결과를 한 명의 편집 담당이 이 글로 종합했다. 특정 결론을 미리 정해두고 자료를 짜맞추지 않도록, 세 개의 서로 다른 흐름(좋은 흐름·보통 조정·깊은 침체)을 같은 비중으로 검토했고, 검토 과정에서 나온 반박과 하향 조정도 본문과 미확인 목록에 그대로 남겼다.</p>
+      <p><b>이해관계 고지.</b> 이 글을 만든 쪽은 코스피나 개별 반도체 종목에 대해 어떤 포지션도 보유하고 있지 않으며, 이 글로 특정 매매를 유도할 유인이 없다. 목표주가·매수의견처럼 결론을 하나의 숫자로 좁히는 요소는 의도적으로 넣지 않았다.</p>
+      <p><b>한계.</b> 원자료가 없는 항목은 증권사·투자은행의 공개 보고서로 보완했으며, 그 부분은 본문과 부록에 출처와 신뢰도 등급을 함께 표시했다. 이 글은 1회성 정적 분석이며, 새 자료가 나와도 자동으로 갱신되지 않는다.</p>
+    </div>
 
     <footer>
       <p>KRX 재계산 문서: <code>_workspace/kospi-bottom/05_krx_reanalysis.md</code> · 근거 원장: <code>_workspace/kospi-bottom/01_public-research-evidence-registry.md</code> · 전 세계 회복 기간 기저율 조사(참고용, 증거등급 C 상한): <code>_workspace/kospi-bottom/08_global_recovery_baserate.md</code> · 아직 확인하지 못한 자료: <a href="미확인_가정.md">미확인_가정.md</a> · 표·근거가 정리된 리포트형 버전: <a href="dashboard.html">dashboard.html</a></p>

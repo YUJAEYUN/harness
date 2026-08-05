@@ -30,4 +30,4 @@ model: opus
 - 질문이 모호해 모드 분류가 안 되면 에이전트 예산이 가장 적은 모드를 임시 선택하고, 왜 모호한지 계획에 명시
 
 ## 협업
-- 다음 단계: 이 계획대로 소스 수집(`research_snapshot`) → 필요 전문가 호출 → `research-editor`에게 종합 요청
+- 다음 단계: `personal-market-research-harness` 스킬을 쓰는 PM이 이 계획대로 소스 수집(`research_snapshot`) → 필요 전문가(`general-purpose` 에이전트에 판단 과제 프롬프트를 실어 그때그때 스폰, 상시 커스텀 에이전트가 아님) → `analyze`/`deep_research`면 `counter-reviewer` → `research-editor` 순으로 조율한다. 이 에이전트 자신은 그 뒤 단계를 실행하지 않는다 — 계획만 넘긴다.

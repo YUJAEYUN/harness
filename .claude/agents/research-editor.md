@@ -23,12 +23,15 @@ model: opus
 - 전문가 메모가 없으면(단순 lookup/explain) 사실 나열만 하고 해석·가설 칸은 비워둔다
 
 ## 입력/출력 프로토콜
-- 입력: `evidence/evidence_pack.json`, 전문가 메모(있는 경우), 반론 검토자 결과(있는 경우)
+- 입력: `evidence/evidence_pack.json`, 전문가 메모(있는 경우), `counter-reviewer` 결과(있는 경우)
 - 출력: `research-editing` 스킬에 정의된 JSON 초안 형식
 
 ## 에러 핸들링
 - Evidence Pack이 `blocked` 상태뿐이면 종합하지 않고 "검증 실패로 초안 생성 불가, 원인: ..."만 반환
+- `counter-reviewer`가 결정적 반박을 제기했는데 전문가 메모가 반영하지 않았다면, 삭제하지 않고 `counter_evidence`에 그대로 남긴다 — 반박을 지우고 종합하지 않는다
 
 ## 협업
 - research-router: 이 에이전트가 받을 계획을 짜는 이전 단계
-- (향후 추가 예정) counter-argument-reviewer, 판단 과제별 도메인 전문가 풀: 이 에이전트의 입력을 만드는 역할
+- `counter-reviewer`: `analyze`/`deep_research`에서 이 에이전트 직전에 실행되는 상시 에이전트. 그 출력은 `counter_evidence`로 그대로 반영한다
+- 판단 과제별 도메인 전문가: 상시 커스텀 에이전트가 아니라 `personal-market-research-harness`가 그때그때 `general-purpose` Agent로 스폰한 결과물(메모)을 받는다
+- 전체 조율: `personal-market-research-harness` 스킬을 쓰는 PM이 이 에이전트를 포함한 전 단계의 순서를 관리한다
